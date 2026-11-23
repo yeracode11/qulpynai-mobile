@@ -26,11 +26,14 @@ class QTabBar extends ConsumerWidget {
       (Icons.place_outlined, l10n.tabStores),
       (Icons.person_outline_rounded, l10n.tabProfile),
     ];
-    return SafeArea(
-      top: false,
-      minimum: const EdgeInsets.only(bottom: 12),
+    // Floating bar sits just above the home indicator instead of on top of
+    // the full safe-area inset plus extra padding.
+    final safeBottom = MediaQuery.viewPaddingOf(context).bottom;
+    final bottomGap = safeBottom > 0 ? (safeBottom - 12).clamp(12.0, 40.0) : 12.0;
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomGap),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: Row(
           spacing: 10,
           children: [
