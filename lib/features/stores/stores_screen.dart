@@ -59,7 +59,8 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
               child: Material(
                 color: AppColors.white,
-                elevation: 0,
+                elevation: 6,
+                shadowColor: const Color(0x401F1A17),
                 shape: const StadiumBorder(),
                 child: InkWell(
                   customBorder: const StadiumBorder(),

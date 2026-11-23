@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../app/tab_bar.dart';
 import '../../core/state/app_state.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_gloss.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/l10n.dart';
@@ -66,7 +67,11 @@ class ProfileScreen extends ConsumerWidget {
                 const SizedBox(height: 20),
                 Container(
                   clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(color: AppColors.red, borderRadius: BorderRadius.circular(28)),
+                  decoration: BoxDecoration(
+                    gradient: AppGloss.fill(AppColors.red),
+                    borderRadius: BorderRadius.circular(28),
+                    boxShadow: AppGloss.glow(AppColors.red),
+                  ),
                   child: Stack(
                     children: [
                       const PositionedDirectional(

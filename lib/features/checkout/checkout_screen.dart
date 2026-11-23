@@ -63,6 +63,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                   Material(
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(22),
+                    elevation: 6,
+                    shadowColor: const Color(0x401F1A17),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(22),
                       onTap: () => pickup ? context.go('/stores') : context.push('/address'),

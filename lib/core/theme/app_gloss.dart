@@ -18,6 +18,13 @@ abstract final class AppGloss {
   static LinearGradient tint(Color c) =>
       LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color.lerp(c, AppColors.white, .55)!, c]);
 
+  /// White panel: pure white at the top fading to a warm off-white.
+  static const panel = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [AppColors.white, Color(0xFFFBF8F5)],
+  );
+
   /// White highlight over the top half, the "glass" reflection.
   static const sheen = LinearGradient(
     begin: Alignment.topCenter,

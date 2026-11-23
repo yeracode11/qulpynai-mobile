@@ -2,6 +2,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_gloss.dart';
 import '../theme/app_text.dart';
 
 /// The strawberry logo. [color] tints it solid (used on red backgrounds).
@@ -310,7 +311,12 @@ class QCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: padding,
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(radius), border: border),
+      decoration: BoxDecoration(
+        gradient: color == AppColors.white ? AppGloss.panel : AppGloss.tint(color),
+        borderRadius: BorderRadius.circular(radius),
+        border: border ?? Border.all(color: AppColors.white, width: 1.2),
+        boxShadow: AppGloss.card,
+      ),
       child: child,
     );
   }
