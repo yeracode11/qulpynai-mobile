@@ -220,35 +220,38 @@ class CategoryTile extends StatelessWidget {
     final (bg, fg) = categoryColors(category.tone);
     return DecoratedBox(
       decoration: BoxDecoration(gradient: AppGloss.tint(bg), borderRadius: BorderRadius.circular(24), boxShadow: AppGloss.card),
-      child: Material(
-        type: MaterialType.transparency,
-        borderRadius: BorderRadius.circular(24),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () => context.push('/menu/category/${category.id}'),
-          child: SizedBox(
-            height: 150,
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                  child: Text(context.tr(category.name), style: AppText.heading(17, color: fg, height: 1.2)),
-                ),
-                PositionedDirectional(
-                  end: -14,
-                  bottom: -14,
-                  width: 110,
-                  height: 110,
-                  child: StripedPlaceholder(
-                    label: context.l10n.photo,
-                    shape: BoxShape.circle,
-                    a: const Color(0x8CFFFFFF),
-                    b: const Color(0x4DFFFFFF),
-                    stripe: 8,
-                    labelColor: const Color(0x731F1A17),
+      child: DecoratedBox(
+        decoration: BoxDecoration(gradient: AppGloss.sheen, borderRadius: BorderRadius.circular(24)),
+        child: Material(
+          type: MaterialType.transparency,
+          borderRadius: BorderRadius.circular(24),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () => context.push('/menu/category/${category.id}'),
+            child: SizedBox(
+              height: 150,
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+                    child: Text(context.tr(category.name), style: AppText.heading(17, color: fg, height: 1.2)),
                   ),
-                ),
-              ],
+                  PositionedDirectional(
+                    end: -14,
+                    bottom: -14,
+                    width: 110,
+                    height: 110,
+                    child: StripedPlaceholder(
+                      label: context.l10n.photo,
+                      shape: BoxShape.circle,
+                      a: const Color(0x8CFFFFFF),
+                      b: const Color(0x4DFFFFFF),
+                      stripe: 8,
+                      labelColor: const Color(0x731F1A17),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

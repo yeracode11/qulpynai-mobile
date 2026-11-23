@@ -1,7 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../theme/app_colors.dart';
-import '../theme/app_gloss.dart';
 import '../theme/app_text.dart';
 
 /// Round 44px icon button used for back / close / share / search.
@@ -83,7 +82,7 @@ class PillButton extends StatelessWidget {
     this.foreground = AppColors.white,
     this.height = 56,
     this.loading = false,
-    this.shadow = true,
+    this.shadow = false,
   });
 
   final String label;
@@ -98,28 +97,36 @@ class PillButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final labelStyle = AppText.ui(16, weight: FontWeight.w700, color: foreground);
-    return GlossSurface(
-      color: color,
-      shape: const StadiumBorder(),
-      glow: shadow,
-      onTap: onPressed == null || loading ? null : onPressed,
-      child: SizedBox(
-        height: height,
-        child: Padding(
-          padding: const EdgeInsetsDirectional.symmetric(horizontal: 24),
-          child: loading
-              ? Center(
-                  child: SizedBox.square(dimension: 22, child: CircularProgressIndicator(strokeWidth: 2.4, color: foreground)),
-                )
-              : Row(
-                  mainAxisAlignment: trailing == null ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(label, style: labelStyle, maxLines: 1, overflow: TextOverflow.ellipsis),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(height / 2),
+        boxShadow: shadow ? [BoxShadow(color: color.withValues(alpha: .3), blurRadius: 24, offset: const Offset(0, 10))] : null,
+      ),
+      child: Material(
+        color: onPressed == null ? color.withValues(alpha: .5) : color,
+        borderRadius: BorderRadius.circular(height / 2),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(height / 2),
+          onTap: loading ? null : onPressed,
+          child: SizedBox(
+            height: height,
+            child: Padding(
+              padding: const EdgeInsetsDirectional.symmetric(horizontal: 24),
+              child: loading
+                  ? Center(
+                      child: SizedBox.square(dimension: 22, child: CircularProgressIndicator(strokeWidth: 2.4, color: foreground)),
+                    )
+                  : Row(
+                      mainAxisAlignment: trailing == null ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(label, style: labelStyle, maxLines: 1, overflow: TextOverflow.ellipsis),
+                        ),
+                        if (trailing != null) Text(trailing!, style: AppText.num(17, color: foreground)),
+                      ],
                     ),
-                    if (trailing != null) Text(trailing!, style: AppText.num(17, color: foreground)),
-                  ],
-                ),
+            ),
+          ),
         ),
       ),
     );
@@ -136,17 +143,13 @@ class AddRoundButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip,
-      child: GlossSurface(
-        color: AppColors.red,
-        shape: const CircleBorder(),
-        onTap: onPressed,
-        child: SizedBox.square(
-          dimension: size,
-          child: const Icon(Icons.add_rounded, size: 20, color: AppColors.white),
-        ),
-      ),
+    return CircleIconButton(
+      icon: Icons.add_rounded,
+      tooltip: tooltip,
+      onPressed: onPressed,
+      background: AppColors.red,
+      foreground: AppColors.white,
+      size: size,
     );
   }
 }

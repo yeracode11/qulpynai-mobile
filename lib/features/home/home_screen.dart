@@ -285,17 +285,20 @@ class _Tile extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: dark ? AppGloss.glow(AppColors.ink) : AppGloss.card,
       ),
-      child: Material(
-        type: MaterialType.transparency,
-        borderRadius: BorderRadius.circular(24),
-        child: InkWell(
+      child: DecoratedBox(
+        decoration: BoxDecoration(gradient: AppGloss.sheen, borderRadius: BorderRadius.circular(24)),
+        child: Material(
+          type: MaterialType.transparency,
           borderRadius: BorderRadius.circular(24),
-          onTap: onTap,
-          child: Container(
-            width: double.infinity,
-            constraints: BoxConstraints(minHeight: minHeight),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: child,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(24),
+            onTap: onTap,
+            child: Container(
+              width: double.infinity,
+              constraints: BoxConstraints(minHeight: minHeight),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: child,
+            ),
           ),
         ),
       ),

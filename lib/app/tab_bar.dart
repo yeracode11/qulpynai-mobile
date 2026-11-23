@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../core/theme/app_colors.dart';
-import '../core/theme/app_gloss.dart';
 import '../core/theme/app_text.dart';
 import '../core/utils/l10n.dart';
 import '../features/cart/cart_controller.dart';
@@ -39,36 +38,25 @@ class QTabBar extends ConsumerWidget {
           spacing: 10,
           children: [
             Expanded(
-              child: DecoratedBox(
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(34), boxShadow: AppGloss.card),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(34),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                    child: Container(
-                      height: 68,
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Color(0xF5FFFFFF), Color(0xE0FFFFFF)],
-                        ),
-                        borderRadius: BorderRadius.circular(34),
-                        border: Border.all(color: const Color(0xCCFFFFFF)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          for (var i = 0; i < tabs.length; i++)
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 1),
-                                child: _TabItem(icon: tabs[i].$1, label: tabs[i].$2, active: i == currentIndex, onTap: () => onTap(i)),
-                              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(34),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                  child: Container(
+                    height: 68,
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    decoration: BoxDecoration(color: const Color(0xEBFFFFFF), borderRadius: BorderRadius.circular(34)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        for (var i = 0; i < tabs.length; i++)
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 1),
+                              child: _TabItem(icon: tabs[i].$1, label: tabs[i].$2, active: i == currentIndex, onTap: () => onTap(i)),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
@@ -104,7 +92,7 @@ class _TabItem extends StatelessWidget {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             height: 56,
-            decoration: BoxDecoration(gradient: active ? AppGloss.tint(AppColors.redSoft) : null, borderRadius: BorderRadius.circular(28)),
+            decoration: BoxDecoration(color: active ? AppColors.redSoft : Colors.transparent, borderRadius: BorderRadius.circular(28)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               spacing: 4,
@@ -137,12 +125,16 @@ class _CartButton extends StatelessWidget {
       button: true,
       label: context.l10n.cartButton('$count'),
       child: ExcludeSemantics(
-        child: SizedBox.square(
-          dimension: 68,
-          child: GlossSurface(
-            color: AppColors.red,
-            shape: const CircleBorder(),
-            onTap: () => context.push('/cart'),
+        child: GestureDetector(
+          onTap: () => context.push('/cart'),
+          child: Container(
+            width: 68,
+            height: 68,
+            decoration: const BoxDecoration(
+              color: AppColors.red,
+              shape: BoxShape.circle,
+              boxShadow: [BoxShadow(color: Color(0x59E42F30), blurRadius: 24, offset: Offset(0, 8))],
+            ),
             child: Stack(
               alignment: Alignment.center,
               children: [

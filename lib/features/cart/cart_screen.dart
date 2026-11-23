@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_gloss.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/l10n.dart';
@@ -141,11 +140,7 @@ class _Lines extends ConsumerWidget {
                                         child: Container(
                                           width: 26,
                                           height: 26,
-                                          decoration: BoxDecoration(
-                                            gradient: AppGloss.fill(AppColors.red),
-                                            shape: BoxShape.circle,
-                                            boxShadow: AppGloss.glow(AppColors.red),
-                                          ),
+                                          decoration: const BoxDecoration(color: AppColors.red, shape: BoxShape.circle),
                                           child: const Icon(Icons.add_rounded, size: 18, color: AppColors.white),
                                         ),
                                       ),
