@@ -166,7 +166,7 @@ class _StoreCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final (statusText, statusColor) = switch (store.status) {
-      StoreStatus.open => (l10n.openUntil(store.closesAt), AppColors.green),
+      StoreStatus.open => (l10n.openUntil(store.closesAt), AppColors.greenText),
       StoreStatus.closingSoon => (l10n.closesIn('${store.minutesToClose}'), AppColors.orange),
       StoreStatus.closed => (l10n.closed, AppColors.muted),
     };

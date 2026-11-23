@@ -107,7 +107,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   children: [
                     QLogo(semanticLabel: l10n.appTitle),
                     const SizedBox(height: 14),
-                    Text(l10n.onbTitle, style: AppText.serif(30, height: 1.2)),
+                    Text(l10n.onbTitle, style: AppText.heading(30, height: 1.2)),
                     const SizedBox(height: 14),
                     Text(
                       l10n.onbText,

@@ -10,7 +10,7 @@ class QChip extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
-    this.height = 36,
+    this.height = 40,
     this.selectedColor = AppColors.red,
     this.selectedForeground = AppColors.white,
     this.color = AppColors.white,

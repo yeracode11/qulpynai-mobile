@@ -111,7 +111,7 @@ class _HomeBento extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 10,
                       children: [
-                        Text(l10n.promoTitle, style: AppText.serif(26, color: AppColors.white, height: 1.25)),
+                        Text(l10n.promoTitle, style: AppText.heading(26, color: AppColors.white, height: 1.25)),
                         Row(
                           spacing: 6,
                           children: [
@@ -205,7 +205,7 @@ class _BentoTiles extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(l10n.customCake, style: AppText.serif(20, color: AppColors.redDark, height: 1.2)),
+                  Text(l10n.customCake, style: AppText.heading(20, color: AppColors.redDark, height: 1.2)),
                   const Align(
                     alignment: AlignmentDirectional.centerEnd,
                     child: ProductPhoto(asset: 'assets/images/product1.png', size: 110),
@@ -480,7 +480,7 @@ class _HomeEditorialState extends ConsumerState<_HomeEditorial> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text(l10n.greeting(profile == null ? '' : context.tr(profile.name)), style: AppText.serif(34, height: 1.18)),
+                Text(l10n.greeting(profile == null ? '' : context.tr(profile.name)), style: AppText.heading(34, height: 1.18)),
               ],
             ),
           ),
@@ -534,7 +534,7 @@ class _HomeEditorialState extends ConsumerState<_HomeEditorial> {
                                   ],
                                 ),
                               ),
-                              Text(l10n.freshToday, style: AppText.serif(24, color: AppColors.white, height: 1.15)),
+                              Text(l10n.freshToday, style: AppText.heading(24, color: AppColors.white, height: 1.15)),
                               const SizedBox(height: 6),
                               Row(
                                 spacing: 6,

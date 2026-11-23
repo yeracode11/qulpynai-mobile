@@ -8,7 +8,6 @@ Flutter-приложение пекарни Qulpynai для iOS и Android. Се
 ```bash
 flutter pub get
 flutter run                     # на подключённом устройстве / симуляторе
-flutter run -d chrome           # быстро посмотреть в браузере
 flutter test                    # smoke-тесты: каждый экран на 390×844, RU и KZ
 ```
 
@@ -69,6 +68,6 @@ lib/
 
 ## Шрифты и ассеты
 
-Raleway и Lora (OFL) взяты из Google Fonts и разложены на статические начертания. Gilroy и логотип —
-из репозитория `qulpynai` (frontend/public). Gilroy в Flutter конвертирован из woff2 в ttf; символ ₸
-берётся из `Gilroy-Tenge`. Цифры набираются Gilroy, потому что у Raleway цифры старого стиля.
+Основной шрифт — Onest (OFL, Google Fonts): полная поддержка казахской кириллицы (ә, ғ, қ, ң, ө, ұ, ү, һ, і) и знака ₸,
+табличные цифры для цен. Из вариативного файла нарезаны статические начертания 400–800 в `assets/fonts`.
+Логотип взят из репозитория `qulpynai` (frontend/public).

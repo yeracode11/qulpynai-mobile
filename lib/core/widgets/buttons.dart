@@ -54,7 +54,7 @@ class CircleIconButton extends StatelessWidget {
 
 /// Back button that pops the current route.
 class BackCircleButton extends StatelessWidget {
-  const BackCircleButton({super.key, this.background = AppColors.white, this.icon = Icons.chevron_left_rounded});
+  const BackCircleButton({super.key, this.background = AppColors.white, this.icon = Icons.arrow_back_rounded});
 
   final Color background;
   final IconData icon;

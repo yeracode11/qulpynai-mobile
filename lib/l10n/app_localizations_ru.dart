@@ -449,4 +449,16 @@ class AppLocalizationsRu extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get undo => 'Вернуть';
+
+  @override
+  String get goToCart => 'В корзину';
+
+  @override
+  String get cartCleared => 'Корзина очищена';
+
+  @override
+  String get itemRemoved => 'Товар удалён';
 }

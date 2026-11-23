@@ -58,7 +58,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 children: [
                   const Align(alignment: AlignmentDirectional.centerStart, child: QLogo()),
                   const SizedBox(height: 12),
-                  Text(l10n.loginTitle, style: AppText.serif(30, height: 1.2)),
+                  Text(l10n.loginTitle, style: AppText.heading(30, height: 1.2)),
                   const SizedBox(height: 12),
                   Text(
                     l10n.loginText,
@@ -87,7 +87,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               keyboardType: TextInputType.phone,
                               autofillHints: const [AutofillHints.telephoneNumberNational],
                               inputFormatters: [FilteringTextInputFormatter.digitsOnly, _PhoneFormatter()],
-                              style: AppText.num(20).copyWith(letterSpacing: .5),
+                              style: AppText.num(20),
                               decoration: const InputDecoration(border: InputBorder.none, isCollapsed: true, hintText: '700 000 00 00'),
                               onSubmitted: (_) => _digits.length == 10 ? _submit() : null,
                             ),

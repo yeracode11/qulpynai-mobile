@@ -10,10 +10,7 @@ import 'package:qulpynai_mobile/core/state/app_state.dart';
 /// layout overflow or build exception.
 Future<void> _loadFonts() async {
   final families = {
-    'Raleway': ['Raleway-400', 'Raleway-500', 'Raleway-600', 'Raleway-700'],
-    'Lora': ['Lora-500', 'Lora-600', 'Lora-700'],
-    'Gilroy': ['Gilroy-SemiBold', 'Gilroy-Bold'],
-    'GilroyTenge': ['Gilroy-Tenge'],
+    'Onest': ['Onest-400', 'Onest-500', 'Onest-600', 'Onest-700', 'Onest-800'],
   };
   for (final MapEntry(key: family, value: files) in families.entries) {
     final loader = FontLoader(family);

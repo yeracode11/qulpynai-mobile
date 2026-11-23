@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../app/tab_bar.dart';
-import '../../core/theme/app_text.dart';
+import '../../core/widgets/visuals.dart';
 import '../../core/utils/l10n.dart';
 import '../../core/widgets/async_view.dart';
 import '../../core/widgets/buttons.dart';
@@ -35,17 +35,9 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
         bottom: false,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-              child: Row(
-                children: [
-                  const BackCircleButton(),
-                  Expanded(
-                    child: Text(category == null ? '' : context.tr(category.name), textAlign: TextAlign.center, style: AppText.serif(22)),
-                  ),
-                  CircleIconButton(icon: Icons.search_rounded, tooltip: l10n.searchHint, onPressed: () => showStub(context)),
-                ],
-              ),
+            ScreenHeader(
+              title: category == null ? '' : context.tr(category.name),
+              actions: [CircleIconButton(icon: Icons.search_rounded, tooltip: l10n.searchHint, onPressed: () => showStub(context))],
             ),
             if (subs.isNotEmpty) ...[
               const SizedBox(height: 14),

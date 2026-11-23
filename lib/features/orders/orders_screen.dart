@@ -38,13 +38,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
             return ListView(
               padding: EdgeInsets.fromLTRB(16, 4, 16, tabBarClearance(context)),
               children: [
-                Row(
-                  spacing: 8,
-                  children: [
-                    const BackCircleButton(background: Colors.transparent),
-                    Expanded(child: Text(l10n.orders, style: AppText.serif(30))),
-                  ],
-                ),
+                ScreenHeader(title: l10n.orders, horizontalPadding: 0),
                 const SizedBox(height: 16),
                 Segmented(
                   height: 44,
@@ -107,7 +101,7 @@ class _ActiveOrderCard extends StatelessWidget {
             ],
           ),
           if (order.etaMinutes != null)
-            Text(l10n.courierEta('${order.etaMinutes}'), style: AppText.serif(20, color: AppColors.tealDark, height: 1.2)),
+            Text(l10n.courierEta('${order.etaMinutes}'), style: AppText.heading(20, color: AppColors.tealDark, height: 1.2)),
           Column(
             spacing: 8,
             children: [

@@ -35,29 +35,7 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
           children: [
             Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-                  child: Row(
-                    spacing: 12,
-                    children: [
-                      const BackCircleButton(),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 4,
-                          children: [
-                            Text(l10n.reviews, style: AppText.serif(20)),
-                            if (product != null)
-                              Text(
-                                context.tr(product.name),
-                                style: AppText.ui(12, weight: FontWeight.w500, color: AppColors.muted),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                ScreenHeader(title: l10n.reviews, subtitle: product == null ? null : context.tr(product.name)),
                 Expanded(
                   child: AsyncView(
                     value: ref.watch(reviewsProvider(widget.productId)),

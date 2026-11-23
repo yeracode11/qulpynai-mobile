@@ -64,22 +64,7 @@ class _CustomCakeScreenState extends ConsumerState<CustomCakeScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-              child: Row(
-                children: [
-                  const BackCircleButton(background: AppColors.bg),
-                  Expanded(
-                    child: Text(
-                      l10n.customCake,
-                      textAlign: TextAlign.center,
-                      style: AppText.ui(17, weight: FontWeight.w700),
-                    ),
-                  ),
-                  const SizedBox(width: 44),
-                ],
-              ),
-            ),
+            ScreenHeader(title: l10n.customCake, backBackground: AppColors.bg, centered: true),
             Expanded(
               child: !ready
                   ? AsyncView(value: sizesAsync, builder: (_) => const SizedBox())

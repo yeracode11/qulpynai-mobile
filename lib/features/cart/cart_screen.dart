@@ -15,6 +15,21 @@ import 'cart_controller.dart';
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
 
+  /// Clearing is destructive, so it's undoable instead of asking first.
+  void _clearWithUndo(BuildContext context, WidgetRef ref) {
+    final ctrl = ref.read(cartProvider.notifier);
+    final saved = ref.read(cartProvider);
+    ctrl.clear();
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(context.l10n.cartCleared),
+          action: SnackBarAction(label: context.l10n.undo, textColor: AppColors.white, onPressed: () => ctrl.restore(saved)),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
@@ -24,20 +39,11 @@ class CartScreen extends ConsumerWidget {
         bottom: false,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(12, 4, 20, 0),
-              child: Row(
-                spacing: 4,
-                children: [
-                  const BackCircleButton(background: Colors.transparent),
-                  Expanded(child: Text(l10n.cart, style: AppText.serif(30))),
-                  if (!cart.isEmpty)
-                    TextButton(
-                      onPressed: () => ref.read(cartProvider.notifier).clear(),
-                      child: Text(l10n.clear, style: AppText.ui(14, color: AppColors.muted)),
-                    ),
-                ],
-              ),
+            ScreenHeader(
+              title: l10n.cart,
+              actions: [
+                if (!cart.isEmpty) TextLink(label: l10n.clear, color: AppColors.muted, onPressed: () => _clearWithUndo(context, ref)),
+              ],
             ),
             Expanded(child: cart.isEmpty ? const _Empty() : _Lines(cart: cart)),
             if (!cart.isEmpty) _Totals(cart: cart),
@@ -89,7 +95,7 @@ class _Lines extends ConsumerWidget {
                   ),
                   QtyStepper(
                     vertical: true,
-                    buttonSize: 30,
+                    buttonSize: 36,
                     qty: line.qty,
                     incrementLabel: l10n.increase,
                     decrementLabel: l10n.decrease,
@@ -174,7 +180,7 @@ class _Totals extends StatelessWidget {
           cart.deliveryFee == 0
               ? Text(
                   l10n.free,
-                  style: AppText.ui(14, weight: FontWeight.w700, color: AppColors.green),
+                  style: AppText.ui(14, weight: FontWeight.w700, color: AppColors.greenText),
                 )
               : Text(formatTenge(cart.deliveryFee), style: AppText.num(14, weight: FontWeight.w600)),
         ),
@@ -210,7 +216,7 @@ class _Empty extends StatelessWidget {
           spacing: 12,
           children: [
             const QLogo(height: 56),
-            Text(l10n.cartEmpty, style: AppText.serif(24)),
+            Text(l10n.cartEmpty, style: AppText.heading(24)),
             Text(
               l10n.cartEmptyText,
               textAlign: TextAlign.center,

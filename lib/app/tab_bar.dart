@@ -48,7 +48,10 @@ class QTabBar extends ConsumerWidget {
                       children: [
                         for (var i = 0; i < tabs.length; i++)
                           Expanded(
-                            child: _TabItem(icon: tabs[i].$1, label: tabs[i].$2, active: i == currentIndex, onTap: () => onTap(i)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 1),
+                              child: _TabItem(icon: tabs[i].$1, label: tabs[i].$2, active: i == currentIndex, onTap: () => onTap(i)),
+                            ),
                           ),
                       ],
                     ),

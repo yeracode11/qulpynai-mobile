@@ -10,6 +10,7 @@ import '../../core/theme/app_text.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/l10n.dart';
 import '../../core/widgets/buttons.dart';
+import '../../core/widgets/visuals.dart';
 import '../../data/providers.dart';
 
 /// 1h — 4-digit SMS code. Mock accepts `1234`.
@@ -95,7 +96,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(l10n.otpTitle, style: AppText.serif(30, height: 1.2)),
+                  Text(l10n.otpTitle, style: AppText.heading(30, height: 1.2)),
                   const SizedBox(height: 12),
                   Text(
                     l10n.otpSent(formatPhone(widget.phone)),
@@ -134,21 +135,17 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                       padding: const EdgeInsets.only(bottom: 6),
                       child: Text(l10n.otpWrong, style: AppText.ui(13, color: AppColors.redDark)),
                     ),
-                  Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    spacing: 12,
-                    runSpacing: 8,
+                  Row(
                     children: [
-                      _secondsLeft > 0
-                          ? Text(l10n.resendIn(time), style: AppText.ui(14, color: AppColors.muted))
-                          : GestureDetector(
-                              onTap: () => setState(_startTimer),
-                              child: Text(l10n.resend, style: AppText.ui(14, color: AppColors.teal)),
-                            ),
-                      GestureDetector(
-                        onTap: () => context.pop(),
-                        child: Text(l10n.changeNumber, style: AppText.ui(14, color: AppColors.red)),
+                      Expanded(
+                        child: _secondsLeft > 0
+                            ? Text(l10n.resendIn(time), style: AppText.ui(14, color: AppColors.muted))
+                            : Align(
+                                alignment: AlignmentDirectional.centerStart,
+                                child: TextLink(label: l10n.resend, color: AppColors.tealDark, onPressed: () => setState(_startTimer)),
+                              ),
                       ),
+                      TextLink(label: l10n.changeNumber, onPressed: () => context.pop()),
                     ],
                   ),
                   const SizedBox(height: 24),

@@ -28,13 +28,15 @@ abstract final class AppTheme {
       useMaterial3: true,
       colorScheme: scheme,
       scaffoldBackgroundColor: AppColors.bg,
-      fontFamily: 'Raleway',
+      fontFamily: 'Onest',
       splashFactory: InkSparkle.splashFactory,
+      materialTapTargetSize: MaterialTapTargetSize.padded,
+      visualDensity: VisualDensity.standard,
       textSelectionTheme: const TextSelectionThemeData(cursorColor: AppColors.teal),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: AppColors.ink,
-        contentTextStyle: const TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.w600, color: AppColors.white),
+        contentTextStyle: const TextStyle(fontFamily: 'Onest', fontWeight: FontWeight.w600, color: AppColors.white),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );

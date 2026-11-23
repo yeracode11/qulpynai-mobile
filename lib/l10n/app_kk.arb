@@ -131,5 +131,9 @@
   "retry": "Қайталау",
   "apartment": "{apt}-пәтер, {floor}-қабат",
   "basedOn": "{count} пікір",
-  "daysAgo": "{count, plural, =0{Бүгін} other{{count} күн бұрын}}"
+  "daysAgo": "{count, plural, =0{Бүгін} other{{count} күн бұрын}}",
+  "undo": "Қайтару",
+  "goToCart": "Себетке",
+  "cartCleared": "Себет тазаланды",
+  "itemRemoved": "Тауар өшірілді"
 }

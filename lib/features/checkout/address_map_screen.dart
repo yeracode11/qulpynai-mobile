@@ -71,7 +71,7 @@ class AddressMapScreen extends ConsumerWidget {
               child: Row(
                 spacing: 12,
                 children: [
-                  CircleIconButton(icon: Icons.chevron_left_rounded, tooltip: l10n.back, shadow: true, onPressed: () => context.pop()),
+                  CircleIconButton(icon: Icons.arrow_back_rounded, tooltip: l10n.back, shadow: true, onPressed: () => context.pop()),
                   Container(
                     height: 44,
                     padding: const EdgeInsets.symmetric(horizontal: 18),
@@ -160,11 +160,7 @@ class AddressMapScreen extends ConsumerWidget {
                                     ),
                                     Text(
                                       l10n.zoneInfo(eta, formatTenge(MockData.freeDeliveryFrom)),
-                                      style: AppText.ui(
-                                        12,
-                                        weight: FontWeight.w500,
-                                        color: const Color(0xFF3E5A30),
-                                      ).copyWith(fontFamilyFallback: const ['GilroyTenge']),
+                                      style: AppText.ui(12, weight: FontWeight.w500, color: const Color(0xFF3E5A30)),
                                     ),
                                   ],
                                 ),

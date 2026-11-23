@@ -47,13 +47,13 @@ class ProfileScreen extends ConsumerWidget {
                       CircleAvatar(
                         radius: 32,
                         backgroundColor: AppColors.teal,
-                        child: Text(name.characters.first, style: AppText.serif(24, color: AppColors.white)),
+                        child: Text(name.characters.first, style: AppText.heading(24, color: AppColors.white)),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 6,
                         children: [
-                          Text(name, style: AppText.serif(24)),
+                          Text(name, style: AppText.heading(24)),
                           Text(
                             formatPhone(user.phone),
                             style: AppText.num(13, weight: FontWeight.w600, color: AppColors.muted),
@@ -86,12 +86,7 @@ class ProfileScreen extends ConsumerWidget {
                               width: 240,
                               child: Text(
                                 l10n.bonusHint,
-                                style: AppText.ui(
-                                  12,
-                                  weight: FontWeight.w500,
-                                  color: const Color(0xE6FFFFFF),
-                                  height: 1.33,
-                                ).copyWith(fontFamilyFallback: const ['GilroyTenge']),
+                                style: AppText.ui(12, weight: FontWeight.w500, color: const Color(0xE6FFFFFF), height: 1.33),
                               ),
                             ),
                           ],

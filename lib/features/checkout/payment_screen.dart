@@ -47,16 +47,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-              child: Row(
-                spacing: 12,
-                children: [
-                  const BackCircleButton(),
-                  Text(l10n.payment, style: AppText.serif(22)),
-                ],
-              ),
-            ),
+            ScreenHeader(title: l10n.payment),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 18, 16, 24),

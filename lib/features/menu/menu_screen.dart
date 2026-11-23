@@ -23,7 +23,7 @@ class MenuScreen extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsetsDirectional.only(start: 4),
-            child: Text(l10n.tabMenu, style: AppText.serif(30, height: 1.2)),
+            child: Text(l10n.tabMenu, style: AppText.heading(30, height: 1.2)),
           ),
           const SizedBox(height: 16),
           Material(
@@ -55,7 +55,7 @@ class MenuScreen extends ConsumerWidget {
             child: ListTile(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
               contentPadding: const EdgeInsetsDirectional.symmetric(horizontal: 16, vertical: 6),
-              title: Text(l10n.customCake, style: AppText.serif(18, color: AppColors.redDark)),
+              title: Text(l10n.customCake, style: AppText.heading(18, color: AppColors.redDark)),
               subtitle: Text(
                 l10n.customCakeSub,
                 style: AppText.ui(12, weight: FontWeight.w500, color: AppColors.inkSoft),

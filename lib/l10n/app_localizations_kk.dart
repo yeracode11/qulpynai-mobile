@@ -433,4 +433,16 @@ class AppLocalizationsKk extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count күн бұрын', zero: 'Бүгін');
     return '$_temp0';
   }
+
+  @override
+  String get undo => 'Қайтару';
+
+  @override
+  String get goToCart => 'Себетке';
+
+  @override
+  String get cartCleared => 'Себет тазаланды';
+
+  @override
+  String get itemRemoved => 'Тауар өшірілді';
 }

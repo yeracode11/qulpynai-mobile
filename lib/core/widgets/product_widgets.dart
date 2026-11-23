@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -8,14 +9,22 @@ import '../theme/app_colors.dart';
 import '../theme/app_text.dart';
 import '../utils/format.dart';
 import '../utils/l10n.dart';
+import 'async_view.dart';
 import 'buttons.dart';
 import 'visuals.dart';
 
 void addToCartWithToast(BuildContext context, WidgetRef ref, Product p) {
+  HapticFeedback.lightImpact();
   ref.read(cartProvider.notifier).add(p);
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text('${context.l10n.addedToCart}: ${context.tr(p.name)}'), duration: const Duration(seconds: 1)));
+    ..showSnackBar(
+      SnackBar(
+        content: Text('${context.l10n.addedToCart}: ${context.tr(p.name)}', maxLines: 2, overflow: TextOverflow.ellipsis),
+        duration: const Duration(seconds: 3),
+        action: SnackBarAction(label: context.l10n.goToCart, textColor: AppColors.white, onPressed: () => context.push('/cart')),
+      ),
+    );
 }
 
 /// Two-column grid card (design 1i).
@@ -46,10 +55,14 @@ class ProductGridCard extends ConsumerWidget {
                   alignment: Alignment.center,
                   children: [
                     ProductPhoto(asset: product.image, size: 124),
-                    const PositionedDirectional(
-                      top: 10,
-                      end: 10,
-                      child: Icon(Icons.favorite_border_rounded, size: 22, color: AppColors.muted),
+                    PositionedDirectional(
+                      top: 0,
+                      end: 0,
+                      child: IconButton(
+                        tooltip: context.l10n.favorite,
+                        onPressed: () => showStub(context),
+                        icon: const Icon(Icons.favorite_border_rounded, size: 22, color: AppColors.muted),
+                      ),
                     ),
                     if (product.isNew)
                       PositionedDirectional(
@@ -59,7 +72,7 @@ class ProductGridCard extends ConsumerWidget {
                           height: 22,
                           padding: const EdgeInsetsDirectional.symmetric(horizontal: 8),
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(color: AppColors.green, borderRadius: BorderRadius.circular(11)),
+                          decoration: BoxDecoration(color: AppColors.greenText, borderRadius: BorderRadius.circular(11)),
                           child: Text(
                             l10n.newBadge,
                             style: AppText.ui(10, weight: FontWeight.w700, color: AppColors.white),
@@ -210,7 +223,7 @@ class CategoryTile extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-                child: Text(context.tr(category.name), style: AppText.serif(17, color: fg, height: 1.2)),
+                child: Text(context.tr(category.name), style: AppText.heading(17, color: fg, height: 1.2)),
               ),
               PositionedDirectional(
                 end: -14,

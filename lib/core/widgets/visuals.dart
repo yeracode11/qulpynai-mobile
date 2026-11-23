@@ -80,7 +80,7 @@ class StripedPlaceholder extends StatelessWidget {
         if (label != null)
           Text(
             label!,
-            style: TextStyle(fontFamily: 'monospace', fontSize: 11, fontWeight: FontWeight.w500, color: labelColor),
+            style: TextStyle(fontFamily: 'Onest', fontSize: 12, fontWeight: FontWeight.w500, color: labelColor),
           ),
       ],
     );
@@ -133,7 +133,7 @@ class MapPlaceholder extends StatelessWidget {
                 padding: const EdgeInsetsDirectional.only(start: 12, top: 64),
                 child: Text(
                   caption!,
-                  style: const TextStyle(fontFamily: 'monospace', fontSize: 11, color: AppColors.muted),
+                  style: const TextStyle(fontFamily: 'Onest', fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.muted),
                 ),
               ),
             ),
@@ -171,15 +171,120 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Expanded(child: Text(title, style: AppText.serif(20, height: 1.2))),
-        if (action != null)
-          GestureDetector(
-            onTap: onAction,
-            child: Text(action!, style: AppText.ui(13, color: AppColors.red)),
+        Expanded(
+          child: Semantics(header: true, child: Text(title, style: AppText.headline)),
+        ),
+        if (action != null) TextLink(label: action!, onPressed: onAction),
+      ],
+    );
+  }
+}
+
+/// Text-only action with a 44 px tall touch area.
+class TextLink extends StatelessWidget {
+  const TextLink({super.key, required this.label, required this.onPressed, this.color = AppColors.red});
+
+  final String label;
+  final VoidCallback? onPressed;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        foregroundColor: color,
+        minimumSize: const Size(44, 44),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        textStyle: AppText.ui(14),
+        shape: const StadiumBorder(),
+      ),
+      child: Text(label),
+    );
+  }
+}
+
+/// Standard top bar for pushed screens: back button, title, optional actions.
+/// Large variant is for tab roots (title only, 30 px).
+class ScreenHeader extends StatelessWidget {
+  const ScreenHeader({
+    super.key,
+    required this.title,
+    this.subtitle,
+    this.showBack = true,
+    this.backBackground = AppColors.white,
+    this.actions = const [],
+    this.large = false,
+    this.centered = false,
+    this.horizontalPadding = 16,
+  });
+
+  final String title;
+  final String? subtitle;
+  final bool showBack;
+  final Color backBackground;
+  final List<Widget> actions;
+  final bool large;
+  final bool centered;
+  final double horizontalPadding;
+
+  @override
+  Widget build(BuildContext context) {
+    final titleWidget = Column(
+      crossAxisAlignment: centered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Semantics(
+          header: true,
+          child: Text(
+            title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: centered ? TextAlign.center : TextAlign.start,
+            style: large ? AppText.display : AppText.title,
+          ),
+        ),
+        if (subtitle != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(subtitle!, style: AppText.caption),
           ),
       ],
+    );
+    return Padding(
+      padding: EdgeInsets.fromLTRB(horizontalPadding, 8, horizontalPadding, large ? 4 : 8),
+      child: Row(
+        spacing: 12,
+        children: [
+          if (showBack) _BackButton(background: backBackground),
+          Expanded(child: titleWidget),
+          ...actions,
+          if (centered && showBack && actions.isEmpty) const SizedBox(width: 44),
+        ],
+      ),
+    );
+  }
+}
+
+class _BackButton extends StatelessWidget {
+  const _BackButton({required this.background});
+
+  final Color background;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: MaterialLocalizations.of(context).backButtonTooltip,
+      child: Material(
+        color: background,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: () => Navigator.of(context).maybePop(),
+          child: const SizedBox.square(dimension: 44, child: Icon(Icons.arrow_back_rounded, size: 22, color: AppColors.ink)),
+        ),
+      ),
     );
   }
 }

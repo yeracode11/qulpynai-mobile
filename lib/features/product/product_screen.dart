@@ -93,7 +93,7 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 12,
                       children: [
-                        Expanded(child: Text(context.tr(p.name), style: AppText.serif(26, height: 1.23))),
+                        Expanded(child: Text(context.tr(p.name), style: AppText.heading(26, height: 1.23))),
                         Material(
                           color: AppColors.white,
                           shape: const StadiumBorder(),

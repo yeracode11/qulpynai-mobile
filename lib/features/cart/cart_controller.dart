@@ -80,6 +80,9 @@ class CartController extends Notifier<CartState> {
 
   void clear() => state = const CartState([]);
 
+  /// Puts back a previously saved cart (used by "Undo").
+  void restore(CartState saved) => state = saved;
+
   void _update(String key, int delta) {
     final lines = <CartLine>[];
     for (final l in state.lines) {

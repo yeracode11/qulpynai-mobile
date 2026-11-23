@@ -883,6 +883,30 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'{count, plural, =0{Сегодня} one{{count} день назад} few{{count} дня назад} many{{count} дней назад} other{{count} дня назад}}'**
   String daysAgo(int count);
+
+  /// No description provided for @undo.
+  ///
+  /// In ru, this message translates to:
+  /// **'Вернуть'**
+  String get undo;
+
+  /// No description provided for @goToCart.
+  ///
+  /// In ru, this message translates to:
+  /// **'В корзину'**
+  String get goToCart;
+
+  /// No description provided for @cartCleared.
+  ///
+  /// In ru, this message translates to:
+  /// **'Корзина очищена'**
+  String get cartCleared;
+
+  /// No description provided for @itemRemoved.
+  ///
+  /// In ru, this message translates to:
+  /// **'Товар удалён'**
+  String get itemRemoved;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

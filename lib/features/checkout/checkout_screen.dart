@@ -49,16 +49,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         bottom: false,
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-              child: Row(
-                spacing: 12,
-                children: [
-                  const BackCircleButton(),
-                  Text(l10n.checkout, style: AppText.serif(22)),
-                ],
-              ),
-            ),
+            ScreenHeader(title: l10n.checkout),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
