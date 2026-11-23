@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../app/tab_bar.dart';
 import '../../core/state/app_state.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_gloss.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/l10n.dart';
@@ -277,17 +278,25 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: color,
-      borderRadius: BorderRadius.circular(24),
-      child: InkWell(
+    final dark = color.computeLuminance() < .2;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: dark ? AppGloss.fill(color) : AppGloss.tint(color),
         borderRadius: BorderRadius.circular(24),
-        onTap: onTap,
-        child: Container(
-          width: double.infinity,
-          constraints: BoxConstraints(minHeight: minHeight),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          child: child,
+        boxShadow: dark ? AppGloss.glow(AppColors.ink) : AppGloss.card,
+      ),
+      child: Material(
+        type: MaterialType.transparency,
+        borderRadius: BorderRadius.circular(24),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(24),
+          onTap: onTap,
+          child: Container(
+            width: double.infinity,
+            constraints: BoxConstraints(minHeight: minHeight),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: child,
+          ),
         ),
       ),
     );

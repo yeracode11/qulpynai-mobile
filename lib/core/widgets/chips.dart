@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../theme/app_colors.dart';
+import '../theme/app_gloss.dart';
 import '../theme/app_text.dart';
 
 /// Rounded filter chip: red when selected, white otherwise.
@@ -30,22 +31,21 @@ class QChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final fg = selected ? selectedForeground : AppColors.ink;
     final style = numeric ? AppText.num(13, color: fg) : AppText.ui(13, weight: selected ? FontWeight.w700 : FontWeight.w600, color: fg);
+    final content = Container(
+      height: height,
+      padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
+      child: Center(widthFactor: 1, child: Text(label, style: style)),
+    );
     return Semantics(
       selected: selected,
       button: true,
-      child: Material(
-        color: selected ? selectedColor : color,
-        borderRadius: BorderRadius.circular(height / 2),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(height / 2),
-          onTap: onTap,
-          child: Container(
-            height: height,
-            padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
-            child: Center(widthFactor: 1, child: Text(label, style: style)),
-          ),
-        ),
-      ),
+      child: selected
+          ? GlossSurface(color: selectedColor, shape: const StadiumBorder(), glow: false, onTap: onTap, child: content)
+          : Material(
+              color: color,
+              shape: const StadiumBorder(),
+              child: InkWell(customBorder: const StadiumBorder(), onTap: onTap, child: content),
+            ),
     );
   }
 }
