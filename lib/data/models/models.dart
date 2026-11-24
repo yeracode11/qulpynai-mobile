@@ -6,9 +6,13 @@ export 'localized_text.dart';
 enum CategoryTone { red, teal, cream, green, white }
 
 class Category {
-  const Category({required this.id, required this.name, required this.tone, this.subcategories = const []});
+  const Category({required this.id, required this.name, required this.tone, this.subcategories = const [], this.image});
 
   final String id;
+
+  /// Photo shown on the category tile: an asset path or an http(s) URL.
+  /// Null shows the striped placeholder.
+  final String? image;
   final LocalizedText name;
   final CategoryTone tone;
   final List<LocalizedText> subcategories;

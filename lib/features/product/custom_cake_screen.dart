@@ -39,7 +39,7 @@ class _CustomCakeScreenState extends ConsumerState<CustomCakeScreen> {
     final size = sizes[_size];
     final product = Product(
       id: 'custom-cake',
-      categoryId: 'cakes',
+      categoryId: '30',
       name: LocalizedText('Торт на заказ Ø ${size.diameterCm}', 'Тапсырыспен торт Ø ${size.diameterCm}'),
       price: _total(sizes, addons),
       weightGrams: size.diameterCm * 70,

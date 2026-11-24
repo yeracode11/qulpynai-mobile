@@ -26,6 +26,41 @@ class QLogo extends StatelessWidget {
   }
 }
 
+/// Image from a bundled asset path or an http(s) URL (backend photos).
+class AppImage extends StatelessWidget {
+  const AppImage({super.key, required this.src, this.width, this.height, this.fit = BoxFit.cover});
+
+  final String src;
+  final double? width;
+  final double? height;
+  final BoxFit fit;
+
+  @override
+  Widget build(BuildContext context) {
+    final cacheWidth = width == null ? null : (width! * MediaQuery.devicePixelRatioOf(context)).round();
+    if (src.startsWith('http')) {
+      return Image.network(
+        src,
+        width: width,
+        height: height,
+        fit: fit,
+        cacheWidth: cacheWidth,
+        excludeFromSemantics: true,
+        errorBuilder: (_, _, _) => SizedBox(width: width, height: height),
+      );
+    }
+    return Image.asset(
+      src,
+      width: width,
+      height: height,
+      fit: fit,
+      cacheWidth: cacheWidth,
+      excludeFromSemantics: true,
+      errorBuilder: (_, _, _) => SizedBox(width: width, height: height),
+    );
+  }
+}
+
 /// Round product photo.
 class ProductPhoto extends StatelessWidget {
   const ProductPhoto({super.key, required this.asset, required this.size, this.radius});
@@ -38,7 +73,7 @@ class ProductPhoto extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius ?? size / 2),
-      child: Image.asset(asset, width: size, height: size, fit: BoxFit.cover, cacheWidth: (size * 3).round(), excludeFromSemantics: true),
+      child: AppImage(src: asset, width: size, height: size, fit: BoxFit.cover),
     );
   }
 }

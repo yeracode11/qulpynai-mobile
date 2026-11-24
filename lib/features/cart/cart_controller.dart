@@ -47,9 +47,9 @@ class CartController extends Notifier<CartState> {
   CartState build() {
     Product p(String id) => MockData.products.firstWhere((e) => e.id == id);
     return CartState([
-      CartLine(key: 'medovik-750', product: p('medovik'), unitPrice: 4900, weightGrams: 750, qty: 1),
-      CartLine(key: 'ny-cheesecake', product: p('ny-cheesecake'), unitPrice: 1290, weightGrams: 120, qty: 2),
-      CartLine(key: 'croissant-almond', product: p('croissant-almond'), unitPrice: 820, weightGrams: 90, qty: 6),
+      CartLine(key: '85-1195', product: p('85'), unitPrice: 8000, weightGrams: 1195, qty: 1),
+      CartLine(key: '148-110', product: p('148'), unitPrice: 1900, weightGrams: 110, qty: 2),
+      CartLine(key: '12-143', product: p('12'), unitPrice: 900, weightGrams: 143, qty: 4),
     ]);
   }
 

@@ -133,7 +133,7 @@ class _Lines extends ConsumerWidget {
                                   child: Stack(
                                     clipBehavior: Clip.none,
                                     children: [
-                                      const Positioned.fill(child: StripedPlaceholder(shape: BoxShape.circle, stripe: 8)),
+                                      Positioned.fill(child: ProductPhoto(asset: p.image, size: 64)),
                                       Positioned(
                                         right: -4,
                                         bottom: -4,

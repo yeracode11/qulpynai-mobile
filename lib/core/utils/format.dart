@@ -17,7 +17,7 @@ String formatThousands(int value) {
 String formatWeight(int grams) {
   if (grams < 1000) return '$grams г';
   final kg = grams / 1000;
-  final text = kg == kg.roundToDouble() ? kg.toStringAsFixed(0) : kg.toStringAsFixed(1).replaceAll('.', ',');
+  final text = kg == kg.roundToDouble() ? kg.toStringAsFixed(0) : kg.toStringAsFixed(2).replaceAll(RegExp(r'0+$'), '').replaceAll('.', ',');
   return '$text кг';
 }
 

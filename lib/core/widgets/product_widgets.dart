@@ -53,11 +53,14 @@ class ProductGridCard extends ConsumerWidget {
               children: [
                 Container(
                   height: 150,
+                  clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(color: AppColors.bg, borderRadius: BorderRadius.circular(18)),
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      ProductPhoto(asset: product.image, size: 124),
+                      Positioned.fill(
+                        child: AppImage(src: product.image, fit: BoxFit.cover),
+                      ),
                       PositionedDirectional(
                         top: 0,
                         end: 0,
@@ -236,20 +239,35 @@ class CategoryTile extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
                     child: Text(context.tr(category.name), style: AppText.heading(17, color: fg, height: 1.2)),
                   ),
-                  PositionedDirectional(
-                    end: -14,
-                    bottom: -14,
-                    width: 110,
-                    height: 110,
-                    child: StripedPlaceholder(
-                      label: context.l10n.photo,
-                      shape: BoxShape.circle,
-                      a: const Color(0x8CFFFFFF),
-                      b: const Color(0x4DFFFFFF),
-                      stripe: 8,
-                      labelColor: const Color(0x731F1A17),
+                  if (category.image case final image?)
+                    PositionedDirectional(
+                      end: -14,
+                      bottom: -14,
+                      width: 116,
+                      height: 116,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [BoxShadow(color: Color(0x261F1A17), blurRadius: 14, offset: Offset(0, 6))],
+                        ),
+                        child: ProductPhoto(asset: image, size: 116),
+                      ),
+                    )
+                  else
+                    PositionedDirectional(
+                      end: -14,
+                      bottom: -14,
+                      width: 110,
+                      height: 110,
+                      child: StripedPlaceholder(
+                        label: context.l10n.photo,
+                        shape: BoxShape.circle,
+                        a: const Color(0x8CFFFFFF),
+                        b: const Color(0x4DFFFFFF),
+                        stripe: 8,
+                        labelColor: const Color(0x731F1A17),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
