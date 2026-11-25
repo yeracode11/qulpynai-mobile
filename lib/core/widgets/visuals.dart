@@ -28,12 +28,13 @@ class QLogo extends StatelessWidget {
 
 /// Image from a bundled asset path or an http(s) URL (backend photos).
 class AppImage extends StatelessWidget {
-  const AppImage({super.key, required this.src, this.width, this.height, this.fit = BoxFit.cover});
+  const AppImage({super.key, required this.src, this.width, this.height, this.fit = BoxFit.cover, this.alignment = Alignment.center});
 
   final String src;
   final double? width;
   final double? height;
   final BoxFit fit;
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +45,7 @@ class AppImage extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
+        alignment: alignment,
         cacheWidth: cacheWidth,
         excludeFromSemantics: true,
         errorBuilder: (_, _, _) => SizedBox(width: width, height: height),
@@ -54,6 +56,7 @@ class AppImage extends StatelessWidget {
       width: width,
       height: height,
       fit: fit,
+      alignment: alignment,
       cacheWidth: cacheWidth,
       excludeFromSemantics: true,
       errorBuilder: (_, _, _) => SizedBox(width: width, height: height),

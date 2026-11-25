@@ -503,6 +503,31 @@ abstract final class MockData {
     ),
   ];
 
+  static const promos = <Promo>[
+    Promo(
+      id: 'spring-cakes',
+      title: LocalizedText('Новая коллекция весенних тортов', 'Көктемгі торттардың жаңа топтамасы'),
+      subtitle: LocalizedText('Клубника, фисташка и шпинат', 'Құлпынай, пісте және шпинат'),
+      image: 'assets/images/baganashil.png',
+      imageAlignment: .4,
+      link: '/menu/category/30',
+    ),
+    Promo(
+      id: 'pizza',
+      title: LocalizedText('Пицца из нашей печи', 'Біздің пештен пицца'),
+      subtitle: LocalizedText('Маргарита, пепперони и с курицей — 3 500 ₸', 'Маргарита, пепперони және тауық етімен — 3 500 ₸'),
+      image: 'assets/images/products/154.jpg',
+      link: '/menu/category/18',
+    ),
+    Promo(
+      id: 'croissants',
+      title: LocalizedText('Круассаны каждое утро', 'Күн сайын таңертең круассан'),
+      subtitle: LocalizedText('С кремом, шоколадом и сэндвичи', 'Кремді, шоколадты және сэндвич'),
+      image: 'assets/images/products/12.jpg',
+      link: '/menu/category/26',
+    ),
+  ];
+
   static const hitIds = ['97', '88', '84', '148'];
   static const upsellIds = ['45', '16', '180'];
 

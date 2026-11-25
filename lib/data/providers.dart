@@ -12,6 +12,7 @@ final profileRepositoryProvider = Provider<ProfileRepository>((ref) => const Moc
 
 // Read models.
 final categoriesProvider = FutureProvider<List<Category>>((ref) => ref.watch(catalogRepositoryProvider).categories());
+final promosProvider = FutureProvider<List<Promo>>((ref) => ref.watch(catalogRepositoryProvider).promos());
 final hitsProvider = FutureProvider<List<Product>>((ref) => ref.watch(catalogRepositoryProvider).hits());
 final upsellProvider = FutureProvider<List<Product>>((ref) => ref.watch(catalogRepositoryProvider).upsell());
 final productsProvider = FutureProvider.family<List<Product>, String?>(

@@ -15,6 +15,7 @@ import '../../core/widgets/lang_switch.dart';
 import '../../core/widgets/product_widgets.dart';
 import '../../core/widgets/visuals.dart';
 import '../../data/providers.dart';
+import 'promo_carousel.dart';
 
 /// Home tab. Renders one of the three design directions (1a / 1b / 1c).
 class HomeScreen extends ConsumerWidget {
@@ -78,62 +79,8 @@ class _HomeBento extends ConsumerWidget {
         padding: EdgeInsets.only(bottom: tabBarClearance(context)),
         child: Stack(
           children: [
-            // Promo story.
-            SizedBox(
-              height: heroHeight,
-              width: double.infinity,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  ColoredBox(
-                    color: AppColors.teal,
-                    child: Image.asset(
-                      'assets/images/baganashil.png',
-                      fit: BoxFit.cover,
-                      alignment: const Alignment(0, .4),
-                      excludeFromSemantics: true,
-                    ),
-                  ),
-                  const DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Color(0x2E000000), Color(0x00000000), Color(0x001F1A17), Color(0x8C1F1A17)],
-                        stops: [0, .3, .55, 1],
-                      ),
-                    ),
-                  ),
-                  PositionedDirectional(
-                    start: 20,
-                    end: 20,
-                    bottom: 36,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 10,
-                      children: [
-                        Text(l10n.promoTitle, style: AppText.heading(26, color: AppColors.white, height: 1.25)),
-                        Row(
-                          spacing: 6,
-                          children: [
-                            for (var i = 0; i < 3; i++)
-                              Expanded(
-                                child: Container(
-                                  height: 3,
-                                  decoration: BoxDecoration(
-                                    color: i == 0 ? AppColors.white : const Color(0x73FFFFFF),
-                                    borderRadius: BorderRadius.circular(2),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Promo stories.
+            PromoCarousel(height: heroHeight),
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),

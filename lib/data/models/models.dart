@@ -86,6 +86,24 @@ class CakeAddon {
 
 enum StoreStatus { open, closingSoon, closed }
 
+/// Home-screen promo banner (story-style carousel).
+class Promo {
+  const Promo({required this.id, required this.title, required this.image, this.subtitle, this.link, this.imageAlignment = 0});
+
+  final String id;
+  final LocalizedText title;
+  final LocalizedText? subtitle;
+
+  /// Asset path or http(s) URL.
+  final String image;
+
+  /// Vertical focus of the cover crop, -1 (top) … 1 (bottom).
+  final double imageAlignment;
+
+  /// In-app route opened on tap, e.g. `/menu/category/30`.
+  final String? link;
+}
+
 class Store {
   const Store({
     required this.id,

@@ -10,6 +10,7 @@ const _latency = Duration(milliseconds: 350);
 abstract interface class CatalogRepository {
   Future<List<Category>> categories();
   Future<List<Product>> products({String? categoryId});
+  Future<List<Promo>> promos();
   Future<List<Product>> hits();
   Future<List<Product>> upsell();
   Future<Product> product(String id);
@@ -29,6 +30,9 @@ class MockCatalogRepository implements CatalogRepository {
     _latency,
     () => categoryId == null ? MockData.products : MockData.products.where((p) => p.categoryId == categoryId).toList(),
   );
+
+  @override
+  Future<List<Promo>> promos() => Future.delayed(_latency, () => MockData.promos);
 
   @override
   Future<List<Product>> hits() => Future.delayed(_latency, () => _byIds(MockData.hitIds));
