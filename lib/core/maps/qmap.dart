@@ -28,13 +28,16 @@ final mapKitReadyProvider = FutureProvider<bool>((ref) async {
 
 /// A store or other point of interest drawn as a round pin.
 class QMapPin {
-  const QMapPin({required this.id, required this.point, this.active = true, this.onTap});
+  const QMapPin({required this.id, required this.point, this.active = true, this.selected = false, this.onTap});
 
   final String id;
   final GeoPoint point;
 
   /// Red when active, grey otherwise (e.g. a closed store).
   final bool active;
+
+  /// Drawn larger and on top, for the store picked in the list.
+  final bool selected;
   final VoidCallback? onTap;
 }
 
@@ -181,6 +184,7 @@ class _QMapState extends ConsumerState<QMap> {
             mapId: ym.MapObjectId('pin_${pin.id}'),
             point: _pt(pin.point),
             opacity: 1,
+            zIndex: pin.selected ? 1 : 0,
             consumeTapEvents: pin.onTap != null,
             onTap: pin.onTap == null ? null : (_, _) => pin.onTap!(),
             icon: ym.PlacemarkIcon.single(
@@ -188,7 +192,7 @@ class _QMapState extends ConsumerState<QMap> {
                 image: ym.BitmapDescriptor.fromAssetImage(
                   pin.active ? 'assets/images/map/store_open.png' : 'assets/images/map/store_closed.png',
                 ),
-                scale: .6,
+                scale: pin.selected ? .9 : .6,
               ),
             ),
           ),

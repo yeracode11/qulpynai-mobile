@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -37,10 +39,24 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
   @override
   void dispose() {
     _search.dispose();
+    _sheet.dispose();
     super.dispose();
   }
 
   final _map = QMapController();
+  final _sheet = DraggableScrollableController();
+
+  /// Store picked in the list or on the map; its card and pin are highlighted.
+  String? _selected;
+
+  /// Lowers the list and flies the map to [store].
+  Future<void> _show(Store store) async {
+    setState(() => _selected = store.id);
+    if (_sheet.isAttached && _sheet.size > .32) {
+      unawaited(_sheet.animateTo(.3, duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic));
+    }
+    await _map.moveTo(store.location, zoom: 16);
+  }
 
   /// The customer's position once they tap "My location"; distances count from it.
   GeoPoint? _me;
@@ -94,7 +110,8 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
                           id: st.id,
                           point: st.location,
                           active: st.status != StoreStatus.closed,
-                          onTap: () => _map.moveTo(st.location, zoom: 15),
+                          selected: st.id == _selected,
+                          onTap: () => _show(st),
                         ),
                     ],
                     fallback: _FallbackMap(top: top),
@@ -143,6 +160,7 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
             ),
           ),
           DraggableScrollableSheet(
+            controller: _sheet,
             initialChildSize: .56,
             minChildSize: .3,
             maxChildSize: .92,
@@ -185,7 +203,12 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
                       for (final s in shown)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12),
-                          child: _StoreCard(store: s, distance: _me == null ? s.distanceKm : distanceKm(_me!, s.location)),
+                          child: _StoreCard(
+                            store: s,
+                            distance: _me == null ? s.distanceKm : distanceKm(_me!, s.location),
+                            selected: s.id == _selected,
+                            onTap: () => _show(s),
+                          ),
                         ),
                     ],
                   );
@@ -257,9 +280,13 @@ class _FallbackMap extends StatelessWidget {
 }
 
 class _StoreCard extends StatelessWidget {
-  const _StoreCard({required this.store, required this.distance});
+  const _StoreCard({required this.store, required this.distance, required this.selected, required this.onTap});
 
   final Store store;
+  final bool selected;
+
+  /// Shows the store on the map.
+  final VoidCallback onTap;
 
   /// Kilometres from the customer (or the mock estimate before we know where they are).
   final double distance;
@@ -272,71 +299,80 @@ class _StoreCard extends StatelessWidget {
       StoreStatus.closingSoon => (l10n.closesIn('${store.minutesToClose}'), AppColors.orange),
       StoreStatus.closed => (l10n.closed, AppColors.muted),
     };
-    return QCard(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 8,
-        children: [
-          Row(
+    return Semantics(
+      button: true,
+      selected: selected,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: QCard(
+          border: selected ? Border.all(color: AppColors.red, width: 2) : null,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 8,
             children: [
-              Expanded(
-                child: Text(store.name, style: AppText.ui(16, weight: FontWeight.w700)),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(store.name, style: AppText.ui(16, weight: FontWeight.w700)),
+                  ),
+                  Text(
+                    '${distance.toStringAsFixed(1).replaceAll('.', ',')} км',
+                    style: AppText.num(12, weight: FontWeight.w600, color: AppColors.muted),
+                  ),
+                ],
               ),
               Text(
-                '${distance.toStringAsFixed(1).replaceAll('.', ',')} км',
-                style: AppText.num(12, weight: FontWeight.w600, color: AppColors.muted),
+                context.tr(store.address),
+                style: AppText.ui(13, weight: FontWeight.w500, color: AppColors.inkSoft),
               ),
-            ],
-          ),
-          Text(
-            context.tr(store.address),
-            style: AppText.ui(13, weight: FontWeight.w500, color: AppColors.inkSoft),
-          ),
-          Row(
-            children: [
-              Container(
-                width: 7,
-                height: 7,
-                decoration: BoxDecoration(color: statusColor, shape: BoxShape.circle),
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(statusText, style: AppText.ui(12, color: statusColor)),
-              ),
-              Tooltip(
-                message: l10n.call,
-                child: Material(
-                  color: AppColors.tealSoft,
-                  shape: const CircleBorder(),
-                  child: InkWell(
-                    customBorder: const CircleBorder(),
-                    onTap: () => callPhone(context, store.phone),
-                    child: const SizedBox.square(dimension: 36, child: Icon(Icons.call_outlined, size: 16, color: AppColors.tealDark)),
+              Row(
+                children: [
+                  Container(
+                    width: 7,
+                    height: 7,
+                    decoration: BoxDecoration(color: statusColor, shape: BoxShape.circle),
                   ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Material(
-                color: AppColors.ink,
-                shape: const StadiumBorder(),
-                child: InkWell(
-                  customBorder: const StadiumBorder(),
-                  onTap: () => openRoute(context, 'Qulpynai ${store.address.ru}'),
-                  child: Container(
-                    height: 36,
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    alignment: Alignment.center,
-                    child: Text(
-                      l10n.route,
-                      style: AppText.ui(12, weight: FontWeight.w700, color: AppColors.white),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(statusText, style: AppText.ui(12, color: statusColor)),
+                  ),
+                  Tooltip(
+                    message: l10n.call,
+                    child: Material(
+                      color: AppColors.tealSoft,
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        customBorder: const CircleBorder(),
+                        onTap: () => callPhone(context, store.phone),
+                        child: const SizedBox.square(dimension: 36, child: Icon(Icons.call_outlined, size: 16, color: AppColors.tealDark)),
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(width: 8),
+                  Material(
+                    color: AppColors.ink,
+                    shape: const StadiumBorder(),
+                    child: InkWell(
+                      customBorder: const StadiumBorder(),
+                      onTap: () => openRoute(context, 'Qulpynai ${store.address.ru}'),
+                      child: Container(
+                        height: 36,
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        alignment: Alignment.center,
+                        child: Text(
+                          l10n.route,
+                          style: AppText.ui(12, weight: FontWeight.w700, color: AppColors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
