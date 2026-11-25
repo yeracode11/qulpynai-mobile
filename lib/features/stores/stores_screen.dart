@@ -79,7 +79,8 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
             left: 0,
             right: 0,
             top: 0,
-            height: 420 + top,
+            // Reaches under the sheet so no empty band shows; the centre stays above it.
+            height: MediaQuery.sizeOf(context).height * .75,
             child: QMap(
               center: _center(stores),
               zoom: 13,
