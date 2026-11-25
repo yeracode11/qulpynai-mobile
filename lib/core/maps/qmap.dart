@@ -116,7 +116,7 @@ class QMap extends ConsumerWidget {
                 image: ym.BitmapDescriptor.fromAssetImage(
                   pin.active ? 'assets/images/map/store_open.png' : 'assets/images/map/store_closed.png',
                 ),
-                scale: .45,
+                scale: .6,
               ),
             ),
           ),

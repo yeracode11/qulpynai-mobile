@@ -81,21 +81,24 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
             top: 0,
             // Reaches under the sheet so no empty band shows; the centre stays above it.
             height: MediaQuery.sizeOf(context).height * .75,
-            child: QMap(
-              center: _center(stores),
-              zoom: 13,
-              controller: _map,
-              pins: [
-                for (final st in stores)
-                  QMapPin(
-                    id: st.id,
-                    point: st.location,
-                    active: st.status != StoreStatus.closed,
-                    onTap: () => _map.moveTo(st.location, zoom: 15),
+            // Wait for the stores so the camera opens centred on them.
+            child: stores.isEmpty
+                ? const ColoredBox(color: AppColors.map)
+                : QMap(
+                    center: _center(stores),
+                    zoom: 13,
+                    controller: _map,
+                    pins: [
+                      for (final st in stores)
+                        QMapPin(
+                          id: st.id,
+                          point: st.location,
+                          active: st.status != StoreStatus.closed,
+                          onTap: () => _map.moveTo(st.location, zoom: 15),
+                        ),
+                    ],
+                    fallback: _FallbackMap(top: top),
                   ),
-              ],
-              fallback: _FallbackMap(top: top),
-            ),
           ),
           PositionedDirectional(
             end: 16,
