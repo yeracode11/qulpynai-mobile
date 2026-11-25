@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -33,10 +35,18 @@ Future<GeoPoint?> locateMe(BuildContext context) async {
       explain(l10n.locationDenied, settings: permission == LocationPermission.deniedForever);
       return null;
     }
-    final pos = await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high, timeLimit: Duration(seconds: 15)),
-    );
-    return GeoPoint(pos.latitude, pos.longitude);
+    try {
+      final pos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium, timeLimit: Duration(seconds: 10)),
+      );
+      return GeoPoint(pos.latitude, pos.longitude);
+    } on TimeoutException {
+      // No fresh fix (indoors, or a simulator without a set location): use the last known one.
+      final last = await Geolocator.getLastKnownPosition();
+      if (last != null) return GeoPoint(last.latitude, last.longitude);
+      explain(l10n.locationTimeout);
+      return null;
+    }
   } on Exception catch (e, st) {
     debugPrint('locateMe failed: $e\n$st');
     explain(l10n.locationDenied);
