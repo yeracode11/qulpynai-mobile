@@ -63,8 +63,11 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
     final top = MediaQuery.paddingOf(context).top;
     final photoHeight = 380.0 + top - 54;
     final tabs = [l10n.tabComposition, l10n.tabStorage, '${l10n.tabReviews} · ${p.reviewsCount}'];
+    // Expand to the full screen so the add-to-cart bar sticks to the bottom
+    // even when the content is shorter than the screen.
     return Stack(
       children: [
+        const SizedBox.expand(),
         SingleChildScrollView(
           padding: const EdgeInsets.only(bottom: 140),
           child: Stack(
