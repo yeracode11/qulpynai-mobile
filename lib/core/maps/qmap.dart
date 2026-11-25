@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,7 +59,7 @@ ym.Point _pt(GeoPoint p) => ym.Point(latitude: p.lat, longitude: p.lng);
 /// Yandex map with delivery zones and pins.
 ///
 /// Shows [fallback] instead when MapKit isn't available (see [mapKitReadyProvider]).
-class QMap extends ConsumerWidget {
+class QMap extends ConsumerStatefulWidget {
   const QMap({
     super.key,
     required this.center,
@@ -84,9 +86,29 @@ class QMap extends ConsumerWidget {
   final ValueChanged<GeoPoint>? onCameraIdle;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (ref.watch(mapKitReadyProvider).value != true) return fallback;
-    var moving = false;
+  ConsumerState<QMap> createState() => _QMapState();
+}
+
+class _QMapState extends ConsumerState<QMap> {
+  /// Camera events before the first positioning are the map's default world
+  /// view, not the customer moving it, so they're ignored.
+  bool _ready = false;
+  bool _moving = false;
+
+  Future<void> _place(ym.YandexMapController map) async {
+    final update = ym.CameraUpdate.newCameraPosition(ym.CameraPosition(target: _pt(widget.center), zoom: widget.zoom));
+    await map.moveCamera(update);
+    // On iOS the first move can be dropped while the view is still being laid out.
+    await Future<void>.delayed(const Duration(milliseconds: 400));
+    if (!mounted) return;
+    await map.moveCamera(update);
+    _ready = true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (ref.watch(mapKitReadyProvider).value != true) return widget.fallback;
+    final QMap(:zones, :pins, :controller, :onCameraMove, :onCameraIdle) = widget;
     return ym.YandexMap(
       mode2DEnabled: true,
       rotateGesturesEnabled: false,
@@ -121,17 +143,18 @@ class QMap extends ConsumerWidget {
             ),
           ),
       ],
-      onMapCreated: (map) async {
+      onMapCreated: (map) {
         controller?._map = map;
-        await map.moveCamera(ym.CameraUpdate.newCameraPosition(ym.CameraPosition(target: _pt(center), zoom: zoom)));
+        unawaited(_place(map));
       },
       onCameraPositionChanged: (position, reason, finished) {
+        if (!_ready) return;
         if (!finished) {
-          if (!moving) onCameraMove?.call();
-          moving = true;
+          if (!_moving) onCameraMove?.call();
+          _moving = true;
           return;
         }
-        moving = false;
+        _moving = false;
         onCameraIdle?.call(GeoPoint(position.target.latitude, position.target.longitude));
       },
     );
