@@ -193,14 +193,14 @@ class _BentoTiles extends ConsumerWidget {
                   ),
                 ),
                 _Tile(
-                  color: AppColors.ink,
+                  color: AppColors.red,
                   minHeight: 96,
                   onTap: () => context.go('/profile'),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(l10n.bonuses, style: AppText.ui(12, color: const Color(0xBFFFFFFF))),
+                      Text(l10n.bonuses, style: AppText.ui(12, color: const Color(0xE6FFFFFF))),
                       const SizedBox(height: 18),
                       Text(bonus == null ? '—' : formatThousands(bonus), style: AppText.num(26, color: AppColors.white)),
                     ],
@@ -230,7 +230,7 @@ class _Tile extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: dark ? AppGloss.fill(color) : AppGloss.tint(color),
         borderRadius: BorderRadius.circular(24),
-        boxShadow: dark ? AppGloss.glow(AppColors.ink) : AppGloss.card,
+        boxShadow: dark ? AppGloss.glow(color) : AppGloss.card,
       ),
       child: DecoratedBox(
         decoration: BoxDecoration(gradient: AppGloss.sheen, borderRadius: BorderRadius.circular(24)),
