@@ -174,6 +174,10 @@ class _AddressMapScreenState extends ConsumerState<AddressMapScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 18, 12),
+                  child: QMapZoomButtons(controller: _map),
+                ),
+                Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: CircleIconButton(
                     icon: Icons.near_me_outlined,

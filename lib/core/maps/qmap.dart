@@ -7,6 +7,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart' as ym;
 
 import '../../data/models/models.dart';
+import '../theme/app_colors.dart';
+import '../utils/l10n.dart';
 
 /// Whether the real Yandex map can be shown: a phone build with a MapKit key.
 ///
@@ -50,8 +52,56 @@ class QMapController {
     );
   }
 
+  /// Zooms in (+1) or out (-1) around the current centre.
+  Future<void> zoomBy(double delta) async {
+    final map = _map;
+    if (map == null) return;
+    final now = await map.getCameraPosition();
+    await map.moveCamera(
+      ym.CameraUpdate.newCameraPosition(ym.CameraPosition(target: now.target, zoom: (now.zoom + delta).clamp(3, 20))),
+      animation: const ym.MapAnimation(duration: .25),
+    );
+  }
+
   /// Shows the blue "you are here" dot. Needs location permission first.
   Future<void> showUser() async => _map?.toggleUserLayer(visible: true, autoZoomEnabled: false);
+}
+
+/// "+" and "−" buttons for a live [QMap]; nothing when the map is a placeholder.
+class QMapZoomButtons extends ConsumerWidget {
+  const QMapZoomButtons({super.key, required this.controller});
+
+  final QMapController controller;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (ref.watch(mapKitReadyProvider).value != true) return const SizedBox.shrink();
+    final l10n = context.l10n;
+    return Material(
+      color: AppColors.white,
+      elevation: 4,
+      shadowColor: const Color(0x401F1A17),
+      borderRadius: BorderRadius.circular(22),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            tooltip: l10n.zoomIn,
+            icon: const Icon(Icons.add_rounded, color: AppColors.ink),
+            constraints: const BoxConstraints.tightFor(width: 44, height: 44),
+            onPressed: () => controller.zoomBy(1),
+          ),
+          const SizedBox(width: 28, child: Divider(height: 1, color: AppColors.line)),
+          IconButton(
+            tooltip: l10n.zoomOut,
+            icon: const Icon(Icons.remove_rounded, color: AppColors.ink),
+            constraints: const BoxConstraints.tightFor(width: 44, height: 44),
+            onPressed: () => controller.zoomBy(-1),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 ym.Point _pt(GeoPoint p) => ym.Point(latitude: p.lat, longitude: p.lng);

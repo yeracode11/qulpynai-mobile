@@ -111,6 +111,11 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
               onPressed: _locate,
             ),
           ),
+          PositionedDirectional(
+            end: 16,
+            top: top + 132,
+            child: QMapZoomButtons(controller: _map),
+          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
