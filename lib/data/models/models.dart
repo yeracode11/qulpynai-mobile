@@ -86,6 +86,17 @@ class CakeAddon {
 
 enum StoreStatus { open, closingSoon, closed }
 
+/// A push notification the user received.
+class AppNotification {
+  const AppNotification({required this.title, required this.body, required this.time, this.link, this.isOrder = false});
+
+  final LocalizedText title;
+  final LocalizedText body;
+  final DateTime time;
+  final String? link;
+  final bool isOrder;
+}
+
 /// Home-screen promo banner (story-style carousel).
 class Promo {
   const Promo({required this.id, required this.title, required this.image, this.subtitle, this.link, this.imageAlignment = 0});
@@ -128,6 +139,13 @@ class Store {
 
 enum OrderStatus { accepted, baking, onTheWay, delivered }
 
+class OrderLine {
+  const OrderLine(this.productId, this.qty);
+
+  final String productId;
+  final int qty;
+}
+
 class Order {
   const Order({
     required this.number,
@@ -136,7 +154,11 @@ class Order {
     required this.status,
     required this.itemsCount,
     this.etaMinutes,
+    this.lines = const [],
   });
+
+  /// What was ordered: product id and quantity. Used for thumbnails and "Repeat".
+  final List<OrderLine> lines;
 
   final int number;
   final int total;

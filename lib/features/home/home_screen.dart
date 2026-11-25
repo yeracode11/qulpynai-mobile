@@ -354,7 +354,7 @@ class _SearchRow extends StatelessWidget {
             shape: const StadiumBorder(),
             child: InkWell(
               customBorder: const StadiumBorder(),
-              onTap: () => showStub(context),
+              onTap: () => context.push('/search'),
               child: Container(
                 height: 48,
                 padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
@@ -383,7 +383,7 @@ class _SearchRow extends StatelessWidget {
             shape: const CircleBorder(),
             child: InkWell(
               customBorder: const CircleBorder(),
-              onTap: () => showStub(context),
+              onTap: () => context.push('/search'),
               child: const SizedBox.square(dimension: 48, child: Icon(Icons.tune_rounded, size: 20)),
             ),
           ),

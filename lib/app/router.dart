@@ -7,16 +7,20 @@ import '../features/cart/cart_screen.dart';
 import '../features/checkout/address_map_screen.dart';
 import '../features/checkout/checkout_screen.dart';
 import '../features/checkout/payment_screen.dart';
+import '../features/favorites/favorites_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/menu/category_screen.dart';
 import '../features/menu/menu_screen.dart';
+import '../features/notifications/notifications_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/orders/orders_screen.dart';
 import '../features/product/custom_cake_screen.dart';
 import '../features/product/product_screen.dart';
 import '../features/product/reviews_screen.dart';
 import '../features/profile/profile_screen.dart';
+import '../features/search/search_screen.dart';
 import '../features/stores/stores_screen.dart';
+import '../features/support/support_screen.dart';
 import 'tab_bar.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -83,6 +87,14 @@ final appRouter = GoRouter(
     GoRoute(path: '/checkout', parentNavigatorKey: rootNavigatorKey, builder: (_, _) => const CheckoutScreen()),
     GoRoute(path: '/payment', parentNavigatorKey: rootNavigatorKey, builder: (_, _) => const PaymentScreen()),
     GoRoute(path: '/address', parentNavigatorKey: rootNavigatorKey, builder: (_, _) => const AddressMapScreen()),
+    GoRoute(
+      path: '/search',
+      parentNavigatorKey: rootNavigatorKey,
+      builder: (_, s) => SearchScreen(categoryId: s.uri.queryParameters['category']),
+    ),
+    GoRoute(path: '/favorites', parentNavigatorKey: rootNavigatorKey, builder: (_, _) => const FavoritesScreen()),
+    GoRoute(path: '/notifications', parentNavigatorKey: rootNavigatorKey, builder: (_, _) => const NotificationsScreen()),
+    GoRoute(path: '/support', parentNavigatorKey: rootNavigatorKey, builder: (_, _) => const SupportScreen()),
   ],
 );
 

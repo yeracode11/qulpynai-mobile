@@ -26,9 +26,9 @@ class ProfileScreen extends ConsumerWidget {
     final rows = [
       (Icons.shopping_bag_outlined, l10n.orders, () => context.go('/profile/orders')),
       (Icons.place_outlined, l10n.addresses, () => context.push('/address')),
-      (Icons.favorite_border_rounded, l10n.favorites, () => showStub(context)),
-      (Icons.notifications_none_rounded, l10n.notifications, () => showStub(context)),
-      (Icons.chat_bubble_outline_rounded, l10n.support, () => showStub(context)),
+      (Icons.favorite_border_rounded, l10n.favorites, () => context.push('/favorites')),
+      (Icons.notifications_none_rounded, l10n.notifications, () => context.push('/notifications')),
+      (Icons.chat_bubble_outline_rounded, l10n.support, () => context.push('/support')),
     ];
     return Scaffold(
       body: SafeArea(
@@ -138,6 +138,15 @@ class ProfileScreen extends ConsumerWidget {
                       Expanded(child: Text(l10n.language, style: AppText.ui(15))),
                       const LangSwitch(long: true),
                     ],
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () => context.go('/login'),
+                    icon: const Icon(Icons.logout_rounded, size: 18),
+                    label: Text(l10n.logout, style: AppText.ui(14)),
+                    style: TextButton.styleFrom(foregroundColor: AppColors.redDark, minimumSize: const Size(44, 44)),
                   ),
                 ),
                 if (kDebugMode || const bool.fromEnvironment('DEV_MENU')) ...[

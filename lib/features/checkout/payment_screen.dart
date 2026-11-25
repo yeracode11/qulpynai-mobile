@@ -9,6 +9,7 @@ import '../../core/utils/l10n.dart';
 import '../../core/widgets/buttons.dart';
 import '../../core/widgets/visuals.dart';
 import '../../data/mock/mock_data.dart';
+import '../../data/models/models.dart';
 import '../../data/providers.dart';
 import '../cart/cart_controller.dart';
 
@@ -29,9 +30,11 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
   Future<void> _pay(int amount) async {
     setState(() => _paying = true);
-    await ref.read(ordersRepositoryProvider).placeOrder(total: amount);
+    final lines = [for (final l in ref.read(cartProvider).lines) OrderLine(l.product.id, l.qty)];
+    await ref.read(ordersRepositoryProvider).placeOrder(total: amount, lines: lines);
     if (!mounted) return;
     ref.read(cartProvider.notifier).clear();
+    ref.invalidate(ordersProvider);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.orderPlaced)));
     context.go('/profile/orders');
   }

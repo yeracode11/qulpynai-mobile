@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
@@ -13,6 +14,7 @@ import '../../core/widgets/visuals.dart';
 import '../../data/models/models.dart';
 import '../../data/providers.dart';
 import '../cart/cart_controller.dart';
+import '../favorites/favorites_controller.dart';
 
 /// 1d — product sheet: nutrition, tabs, sticky add-to-cart bar.
 class ProductScreen extends ConsumerWidget {
@@ -45,7 +47,6 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
   int _variant = 0;
   int _qty = 1;
   int _tab = 0;
-  bool _favorite = true;
 
   Product get p => widget.product;
 
@@ -62,6 +63,7 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
     final l10n = context.l10n;
     final top = MediaQuery.paddingOf(context).top;
     final photoHeight = 380.0 + top - 54;
+    final isFavorite = ref.watch(favoritesProvider.select((f) => f.contains(p.id)));
     final tabs = [l10n.tabComposition, l10n.tabStorage, '${l10n.tabReviews} · ${p.reviewsCount}'];
     // Expand to the full screen so the add-to-cart bar sticks to the bottom
     // even when the content is shorter than the screen.
@@ -162,12 +164,18 @@ class _ProductBodyState extends ConsumerState<_ProductBody> {
               children: [
                 const BackCircleButton(icon: Icons.close_rounded),
                 const Spacer(),
-                CircleIconButton(icon: Icons.ios_share_rounded, tooltip: l10n.share, onPressed: () => showStub(context)),
                 CircleIconButton(
-                  icon: _favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                  icon: Icons.ios_share_rounded,
+                  tooltip: l10n.share,
+                  onPressed: () => SharePlus.instance.share(
+                    ShareParams(text: '${l10n.shareText(context.tr(p.name), formatTenge(_current.price))}\nhttps://qulpynai.kz'),
+                  ),
+                ),
+                CircleIconButton(
+                  icon: isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
                   foreground: AppColors.red,
-                  tooltip: l10n.favorite,
-                  onPressed: () => setState(() => _favorite = !_favorite),
+                  tooltip: isFavorite ? l10n.removeFavorite : l10n.favorite,
+                  onPressed: () => ref.read(favoritesProvider.notifier).toggle(p.id),
                 ),
               ],
             ),

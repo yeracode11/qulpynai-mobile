@@ -5,6 +5,7 @@ import '../../app/tab_bar.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/utils/l10n.dart';
+import '../../core/utils/launch.dart';
 import '../../core/widgets/async_view.dart';
 import '../../core/widgets/chips.dart';
 import '../../core/widgets/visuals.dart';
@@ -21,6 +22,25 @@ class StoresScreen extends ConsumerStatefulWidget {
 
 class _StoresScreenState extends ConsumerState<StoresScreen> {
   bool _openOnly = false;
+  final _search = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _search.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  bool _matches(Store s) {
+    final q = _search.text.trim().toLowerCase();
+    if (q.isEmpty) return true;
+    return '${s.name} ${s.address.ru} ${s.address.kk}'.toLowerCase().contains(q);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,22 +82,19 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
                 elevation: 6,
                 shadowColor: const Color(0x401F1A17),
                 shape: const StadiumBorder(),
-                child: InkWell(
-                  customBorder: const StadiumBorder(),
-                  onTap: () => showStub(context),
-                  child: Container(
-                    height: 48,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      spacing: 10,
-                      children: [
-                        const Icon(Icons.search_rounded, size: 18, color: AppColors.muted),
-                        Text(
-                          l10n.searchStore,
-                          style: AppText.ui(14, weight: FontWeight.w500, color: AppColors.muted),
-                        ),
-                      ],
-                    ),
+                child: TextField(
+                  controller: _search,
+                  textInputAction: TextInputAction.search,
+                  style: AppText.ui(14, weight: FontWeight.w500),
+                  decoration: InputDecoration(
+                    hintText: l10n.searchStore,
+                    hintStyle: AppText.ui(14, weight: FontWeight.w500, color: AppColors.muted),
+                    prefixIcon: const Icon(Icons.search_rounded, size: 18, color: AppColors.muted),
+                    suffixIcon: _search.text.isEmpty
+                        ? null
+                        : IconButton(tooltip: l10n.clearSearch, icon: const Icon(Icons.close_rounded, size: 18), onPressed: _search.clear),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                 ),
               ),
@@ -95,7 +112,7 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
               child: AsyncView(
                 value: ref.watch(storesProvider),
                 builder: (stores) {
-                  final shown = _openOnly ? stores.where((s) => s.status != StoreStatus.closed).toList() : stores;
+                  final shown = stores.where((s) => (!_openOnly || s.status != StoreStatus.closed) && _matches(s)).toList();
                   return ListView(
                     controller: controller,
                     padding: EdgeInsets.fromLTRB(16, 12, 16, tabBarClearance(context)),
@@ -116,6 +133,11 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
                         ],
                       ),
                       const SizedBox(height: 12),
+                      if (shown.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24),
+                          child: Text(l10n.noStoresFound, style: AppText.bodySmall, textAlign: TextAlign.center),
+                        ),
                       for (final s in shown)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12),
@@ -210,7 +232,7 @@ class _StoreCard extends StatelessWidget {
                   shape: const CircleBorder(),
                   child: InkWell(
                     customBorder: const CircleBorder(),
-                    onTap: () => showStub(context),
+                    onTap: () => callPhone(context, store.phone),
                     child: const SizedBox.square(dimension: 36, child: Icon(Icons.call_outlined, size: 16, color: AppColors.tealDark)),
                   ),
                 ),
@@ -221,7 +243,7 @@ class _StoreCard extends StatelessWidget {
                 shape: const StadiumBorder(),
                 child: InkWell(
                   customBorder: const StadiumBorder(),
-                  onTap: () => showStub(context),
+                  onTap: () => openRoute(context, 'Qulpynai ${store.address.ru}'),
                   child: Container(
                     height: 36,
                     padding: const EdgeInsets.symmetric(horizontal: 14),

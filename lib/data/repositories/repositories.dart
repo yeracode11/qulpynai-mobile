@@ -15,6 +15,7 @@ abstract interface class CatalogRepository {
   Future<List<Product>> upsell();
   Future<Product> product(String id);
   Future<List<Review>> reviews(String productId);
+  Future<void> addReview(String productId, Review review);
   Future<List<CakeSize>> cakeSizes();
   Future<List<CakeAddon>> cakeAddons();
 }
@@ -44,7 +45,13 @@ class MockCatalogRepository implements CatalogRepository {
   Future<Product> product(String id) => Future.delayed(_latency, () => MockData.products.firstWhere((p) => p.id == id));
 
   @override
-  Future<List<Review>> reviews(String productId) => Future.delayed(_latency, () => MockData.reviews);
+  Future<List<Review>> reviews(String productId) =>
+      Future.delayed(_latency, () => [...?_userReviews[productId]?.reversed, ...MockData.reviews]);
+
+  static final Map<String, List<Review>> _userReviews = {};
+
+  @override
+  Future<void> addReview(String productId, Review review) => Future.delayed(_latency, () => (_userReviews[productId] ??= []).add(review));
 
   @override
   Future<List<CakeSize>> cakeSizes() => Future.delayed(_latency, () => MockData.cakeSizes);
@@ -70,17 +77,33 @@ abstract interface class OrdersRepository {
   Future<List<Order>> orders();
 
   /// Places an order and returns its number.
-  Future<int> placeOrder({required int total});
+  Future<int> placeOrder({required int total, required List<OrderLine> lines});
 }
 
 class MockOrdersRepository implements OrdersRepository {
   const MockOrdersRepository();
 
-  @override
-  Future<List<Order>> orders() => Future.delayed(_latency, () => MockData.orders);
+  static final List<Order> _placed = [];
 
   @override
-  Future<int> placeOrder({required int total}) => Future.delayed(const Duration(milliseconds: 800), () => 10483);
+  Future<List<Order>> orders() => Future.delayed(_latency, () => [..._placed.reversed, ...MockData.orders]);
+
+  @override
+  Future<int> placeOrder({required int total, required List<OrderLine> lines}) => Future.delayed(const Duration(milliseconds: 800), () {
+    final number = 10483 + _placed.length;
+    _placed.add(
+      Order(
+        number: number,
+        total: total,
+        date: DateTime.now(),
+        status: OrderStatus.accepted,
+        itemsCount: lines.fold(0, (sum, l) => sum + l.qty),
+        etaMinutes: 45,
+        lines: lines,
+      ),
+    );
+    return number;
+  });
 }
 
 abstract interface class AuthRepository {
@@ -104,11 +127,19 @@ class MockAuthRepository implements AuthRepository {
 
 abstract interface class ProfileRepository {
   Future<UserProfile> me();
+  Future<void> updateAddress(Address address);
 }
 
 class MockProfileRepository implements ProfileRepository {
   const MockProfileRepository();
 
+  static UserProfile _me = MockData.user;
+
   @override
-  Future<UserProfile> me() => Future.delayed(_latency, () => MockData.user);
+  Future<UserProfile> me() => Future.delayed(_latency, () => _me);
+
+  @override
+  Future<void> updateAddress(Address address) => Future.delayed(_latency, () {
+    _me = UserProfile(name: _me.name, phone: _me.phone, bonus: _me.bonus, address: address);
+  });
 }

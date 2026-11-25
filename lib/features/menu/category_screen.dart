@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../app/tab_bar.dart';
@@ -37,7 +38,13 @@ class _CategoryScreenState extends ConsumerState<CategoryScreen> {
           children: [
             ScreenHeader(
               title: category == null ? '' : context.tr(category.name),
-              actions: [CircleIconButton(icon: Icons.search_rounded, tooltip: l10n.searchHint, onPressed: () => showStub(context))],
+              actions: [
+                CircleIconButton(
+                  icon: Icons.search_rounded,
+                  tooltip: l10n.searchHint,
+                  onPressed: () => context.push('/search?category=${widget.categoryId}'),
+                ),
+              ],
             ),
             if (subs.isNotEmpty) ...[
               const SizedBox(height: 14),

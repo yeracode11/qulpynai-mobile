@@ -25,6 +25,22 @@ class ReviewsScreen extends ConsumerStatefulWidget {
 class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
   int _filter = 0;
 
+  Future<void> _leaveReview(BuildContext context) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final thanks = context.l10n.reviewThanks;
+    final review = await showModalBottomSheet<Review>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      backgroundColor: AppColors.white,
+      builder: (_) => const _ReviewForm(),
+    );
+    if (review == null) return;
+    await ref.read(catalogRepositoryProvider).addReview(widget.productId, review);
+    ref.invalidate(reviewsProvider(widget.productId));
+    messenger.showSnackBar(SnackBar(content: Text(thanks)));
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -75,7 +91,7 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
               start: 16,
               end: 16,
               bottom: 16,
-              child: PillButton(label: l10n.leaveReview, color: AppColors.ink, onPressed: () => showStub(context)),
+              child: PillButton(label: l10n.leaveReview, color: AppColors.ink, onPressed: () => _leaveReview(context)),
             ),
           ],
         ),
@@ -154,7 +170,8 @@ class _ReviewCard extends StatelessWidget {
       (AppColors.redSoft, AppColors.redDark),
       (AppColors.greenSoft, AppColors.greenDark),
     ];
-    final (bg, fg) = tones[review.author.codeUnitAt(0) % tones.length];
+    final author = review.author.isEmpty ? context.l10n.you : review.author;
+    final (bg, fg) = tones[author.codeUnitAt(0) % tones.length];
     return QCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,7 +184,7 @@ class _ReviewCard extends StatelessWidget {
                 radius: 18,
                 backgroundColor: bg,
                 child: Text(
-                  review.author.characters.first,
+                  author.characters.first,
                   style: AppText.ui(14, weight: FontWeight.w700, color: fg),
                 ),
               ),
@@ -176,7 +193,7 @@ class _ReviewCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   spacing: 4,
                   children: [
-                    Text(review.author, style: AppText.ui(14, weight: FontWeight.w700)),
+                    Text(author, style: AppText.ui(14, weight: FontWeight.w700)),
                     Text(
                       context.l10n.daysAgo(review.daysAgo),
                       style: AppText.ui(11, weight: FontWeight.w500, color: AppColors.muted),
@@ -207,6 +224,80 @@ class _ReviewCard extends StatelessWidget {
                   SizedBox.square(dimension: 64, child: StripedPlaceholder(radius: BorderRadius.circular(14), stripe: 8)),
               ],
             ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReviewForm extends StatefulWidget {
+  const _ReviewForm();
+
+  @override
+  State<_ReviewForm> createState() => _ReviewFormState();
+}
+
+class _ReviewFormState extends State<_ReviewForm> {
+  final _text = TextEditingController();
+  int _rating = 0;
+
+  @override
+  void dispose() {
+    _text.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 20 + MediaQuery.viewInsetsOf(context).bottom + MediaQuery.paddingOf(context).bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 12,
+        children: [
+          Text(l10n.reviewTitle, style: AppText.title),
+          Semantics(
+            label: l10n.rating,
+            value: _rating == 0 ? null : l10n.starsLabel('$_rating'),
+            child: Row(
+              children: [
+                for (var i = 1; i <= 5; i++)
+                  IconButton(
+                    tooltip: l10n.starsLabel('$i'),
+                    iconSize: 34,
+                    onPressed: () => setState(() => _rating = i),
+                    icon: Icon(
+                      i <= _rating ? Icons.star_rounded : Icons.star_outline_rounded,
+                      color: i <= _rating ? AppColors.orange : AppColors.outline,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (_rating == 0) Text(l10n.reviewRateFirst, style: AppText.caption),
+          TextField(
+            controller: _text,
+            minLines: 3,
+            maxLines: 6,
+            maxLength: 500,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: InputDecoration(
+              hintText: l10n.reviewHint,
+              filled: true,
+              fillColor: AppColors.bg,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+            ),
+          ),
+          PillButton(
+            label: l10n.send,
+            onPressed: _rating == 0
+                ? null
+                : () =>
+                      Navigator.of(context)
+                          .pop(Review(author: '', rating: _rating, daysAgo: 0, text: LocalizedText.same(_text.text.trim()))),
+          ),
         ],
       ),
     );

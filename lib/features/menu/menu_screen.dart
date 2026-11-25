@@ -31,7 +31,7 @@ class MenuScreen extends ConsumerWidget {
             shape: const StadiumBorder(),
             child: InkWell(
               customBorder: const StadiumBorder(),
-              onTap: () => showStub(context),
+              onTap: () => context.push('/search'),
               child: Container(
                 height: 48,
                 padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),

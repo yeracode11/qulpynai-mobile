@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../app/tab_bar.dart';
@@ -6,12 +7,14 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/utils/format.dart';
 import '../../core/utils/l10n.dart';
+import '../../core/utils/launch.dart';
 import '../../core/widgets/async_view.dart';
 import '../../core/widgets/buttons.dart';
 import '../../core/widgets/chips.dart';
 import '../../core/widgets/visuals.dart';
 import '../../data/models/models.dart';
 import '../../data/providers.dart';
+import '../cart/cart_controller.dart';
 
 /// 1o — my orders with live tracking of the active one.
 class OrdersScreen extends ConsumerStatefulWidget {
@@ -76,13 +79,13 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
   }
 }
 
-class _ActiveOrderCard extends StatelessWidget {
+class _ActiveOrderCard extends ConsumerWidget {
   const _ActiveOrderCard({required this.order});
 
   final Order order;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final steps = [l10n.stAccepted, l10n.stBaking, l10n.stWay, l10n.stDone];
     final current = order.status.index;
@@ -145,8 +148,7 @@ class _ActiveOrderCard extends StatelessWidget {
           Row(
             spacing: 8,
             children: [
-              const ProductPhoto(asset: 'assets/images/product1.png', size: 40),
-              const ProductPhoto(asset: 'assets/images/product1.png', size: 40),
+              for (final image in _images(ref, order).take(2)) ProductPhoto(asset: image, size: 40),
               if (order.itemsCount > 2)
                 Container(
                   width: 40,
@@ -162,7 +164,7 @@ class _ActiveOrderCard extends StatelessWidget {
                 background: AppColors.tealSoft,
                 foreground: AppColors.tealDark,
                 tooltip: l10n.call,
-                onPressed: () => showStub(context),
+                onPressed: () => callPhone(context, Contacts.phone),
               ),
             ],
           ),
@@ -172,13 +174,13 @@ class _ActiveOrderCard extends StatelessWidget {
   }
 }
 
-class _PastOrderTile extends StatelessWidget {
+class _PastOrderTile extends ConsumerWidget {
   const _PastOrderTile({required this.order});
 
   final Order order;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
     final d = order.date;
     final date = '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}';
@@ -205,10 +207,34 @@ class _PastOrderTile extends StatelessWidget {
             selected: true,
             selectedColor: AppColors.redSoft,
             selectedForeground: AppColors.redDark,
-            onTap: () => showStub(context),
+            onTap: () => repeatOrder(context, ref, order),
           ),
         ],
       ),
     );
   }
+}
+
+List<String> _images(WidgetRef ref, Order order) {
+  final byId = {for (final p in ref.watch(productsProvider(null)).value ?? const <Product>[]) p.id: p};
+  final images = [for (final l in order.lines) ?byId[l.productId]?.image];
+  return images.isEmpty ? const ['assets/images/product1.png', 'assets/images/product1.png'] : images;
+}
+
+/// Puts everything from a past order back in the cart and opens the cart.
+Future<void> repeatOrder(BuildContext context, WidgetRef ref, Order order) async {
+  final messenger = ScaffoldMessenger.of(context);
+  final router = GoRouter.of(context);
+  final message = context.l10n.repeatAdded;
+  final all = await ref.read(productsProvider(null).future);
+  final byId = {for (final p in all) p.id: p};
+  final cart = ref.read(cartProvider.notifier);
+  for (final line in order.lines) {
+    final product = byId[line.productId];
+    if (product != null) cart.add(product, qty: line.qty);
+  }
+  messenger
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(message)));
+  router.push('/cart');
 }

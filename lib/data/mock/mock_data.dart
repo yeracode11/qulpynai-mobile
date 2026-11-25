@@ -528,6 +528,29 @@ abstract final class MockData {
     ),
   ];
 
+  static final notifications = <AppNotification>[
+    AppNotification(
+      title: LocalizedText('Заказ № 10482 в пути', '№ 10482 тапсырыс жолда'),
+      body: LocalizedText('Курьер будет у вас примерно через 25 минут.', 'Курьер шамамен 25 минуттан кейін келеді.'),
+      time: DateTime(2026, 11, 23, 13, 40),
+      link: '/profile/orders',
+      isOrder: true,
+    ),
+    AppNotification(
+      title: LocalizedText('Весенняя коллекция тортов', 'Көктемгі торттар топтамасы'),
+      body: LocalizedText('Клубника, фисташка и шпинат — уже в меню.', 'Құлпынай, пісте және шпинат — мәзірде.'),
+      time: DateTime(2026, 11, 22, 10, 0),
+      link: '/menu/category/30',
+    ),
+    AppNotification(
+      title: LocalizedText('Заказ № 10377 доставлен', '№ 10377 тапсырыс жеткізілді'),
+      body: LocalizedText('Приятного аппетита! Оцените заказ — это займёт минуту.', 'Ас болсын! Тапсырысты бағалаңыз — бір минут қана.'),
+      time: DateTime(2026, 11, 12, 18, 5),
+      link: '/profile/orders',
+      isOrder: true,
+    ),
+  ];
+
   static const hitIds = ['97', '88', '84', '148'];
   static const upsellIds = ['45', '16', '180'];
 
@@ -576,9 +599,31 @@ abstract final class MockData {
   ];
 
   static final orders = <Order>[
-    Order(number: 10482, total: 11900, date: DateTime(2026, 11, 23), status: OrderStatus.onTheWay, itemsCount: 4, etaMinutes: 25),
-    Order(number: 10377, total: 8300, date: DateTime(2026, 11, 12), status: OrderStatus.delivered, itemsCount: 3),
-    Order(number: 10214, total: 15000, date: DateTime(2026, 10, 28), status: OrderStatus.delivered, itemsCount: 1),
+    Order(
+      number: 10482,
+      total: 11700,
+      date: DateTime(2026, 11, 23),
+      status: OrderStatus.onTheWay,
+      itemsCount: 4,
+      etaMinutes: 25,
+      lines: [OrderLine('85', 1), OrderLine('148', 1), OrderLine('12', 2)],
+    ),
+    Order(
+      number: 10377,
+      total: 8350,
+      date: DateTime(2026, 11, 12),
+      status: OrderStatus.delivered,
+      itemsCount: 3,
+      lines: [OrderLine('97', 1), OrderLine('16', 1)],
+    ),
+    Order(
+      number: 10214,
+      total: 7000,
+      date: DateTime(2026, 10, 28),
+      status: OrderStatus.delivered,
+      itemsCount: 2,
+      lines: [OrderLine('153', 1), OrderLine('154', 1)],
+    ),
   ];
 
   static const reviews = <Review>[

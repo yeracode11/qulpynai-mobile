@@ -245,5 +245,78 @@
   "undo": "Вернуть",
   "goToCart": "В корзину",
   "cartCleared": "Корзина очищена",
-  "itemRemoved": "Товар удалён"
+  "itemRemoved": "Товар удалён",
+  "searchTitle": "Поиск",
+  "searchEmpty": "Ничего не нашли",
+  "searchEmptyHint": "Попробуйте другое слово или посмотрите категории",
+  "searchPopular": "Категории",
+  "sortPopular": "Популярные",
+  "sortCheap": "Дешевле",
+  "sortExpensive": "Дороже",
+  "clearSearch": "Стереть",
+  "favoritesEmpty": "Здесь пока пусто",
+  "favoritesEmptyHint": "Нажмите на сердечко у товара, и он сохранится здесь",
+  "removeFavorite": "Убрать из избранного",
+  "notifRecent": "Последние",
+  "notifSettings": "Что присылать",
+  "notifOrders": "Статус заказа",
+  "notifOrdersHint": "Готовим, в пути, доставлен",
+  "notifPromo": "Акции и новинки",
+  "notifPromoHint": "Не чаще раза в неделю",
+  "supportText": "Ответим с 8:00 до 22:00 каждый день",
+  "whatsapp": "WhatsApp",
+  "telegram": "Telegram",
+  "writeEmail": "Написать на почту",
+  "faq": "Частые вопросы",
+  "faq1q": "Сколько стоит доставка?",
+  "faq2q": "Можно заказать торт к нужному времени?",
+  "faq2a": "Да. При оформлении выберите день и интервал доставки. Торт на заказ готовим от двух дней.",
+  "faq3q": "Как вернуть деньги?",
+  "faq3a": "Напишите в поддержку номер заказа. Вернём деньги на карту или Kaspi за 3 рабочих дня.",
+  "couldNotOpen": "Не удалось открыть приложение",
+  "noStoresFound": "Магазины не найдены",
+  "repeatAdded": "Товары из заказа добавлены в корзину",
+  "reviewTitle": "Ваш отзыв",
+  "reviewHint": "Расскажите, что понравилось",
+  "reviewRateFirst": "Поставьте оценку от 1 до 5",
+  "send": "Отправить",
+  "reviewThanks": "Спасибо за отзыв!",
+  "you": "Вы",
+  "logout": "Выйти из аккаунта",
+  "street": "Улица и дом",
+  "floor": "Этаж",
+  "mapSoon": "Определение местоположения появится вместе с картой 2GIS",
+  "save": "Сохранить",
+  "rating": "Оценка",
+  "faq1a": "Доставка стоит {fee}. От {from} доставим бесплатно.",
+  "@faq1a": {
+    "placeholders": {
+      "fee": {
+        "type": "String"
+      },
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "shareText": "{name} — {price} в пекарне Qulpynai",
+  "@shareText": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "starsLabel": "{count} из 5",
+  "@starsLabel": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "aptLabel": "Квартира"
 }

@@ -5,12 +5,12 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../data/models/models.dart';
 import '../../features/cart/cart_controller.dart';
+import '../../features/favorites/favorites_controller.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_gloss.dart';
 import '../theme/app_text.dart';
 import '../utils/format.dart';
 import '../utils/l10n.dart';
-import 'async_view.dart';
 import 'buttons.dart';
 import 'visuals.dart';
 
@@ -26,6 +26,32 @@ void addToCartWithToast(BuildContext context, WidgetRef ref, Product p) {
         action: SnackBarAction(label: context.l10n.goToCart, textColor: AppColors.white, onPressed: () => context.push('/cart')),
       ),
     );
+}
+
+/// Heart toggle for a product; filled red when the product is in favorites.
+class FavoriteButton extends ConsumerWidget {
+  const FavoriteButton({super.key, required this.productId, this.size = 22});
+
+  final String productId;
+  final double size;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isFavorite = ref.watch(favoritesProvider.select((s) => s.contains(productId)));
+    return IconButton(
+      tooltip: isFavorite ? context.l10n.removeFavorite : context.l10n.favorite,
+      isSelected: isFavorite,
+      onPressed: () {
+        HapticFeedback.selectionClick();
+        ref.read(favoritesProvider.notifier).toggle(productId);
+      },
+      icon: Icon(
+        isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+        size: size,
+        color: isFavorite ? AppColors.red : AppColors.muted,
+      ),
+    );
+  }
 }
 
 /// Two-column grid card (design 1i).
@@ -61,15 +87,7 @@ class ProductGridCard extends ConsumerWidget {
                       Positioned.fill(
                         child: AppImage(src: product.image, fit: BoxFit.cover),
                       ),
-                      PositionedDirectional(
-                        top: 0,
-                        end: 0,
-                        child: IconButton(
-                          tooltip: context.l10n.favorite,
-                          onPressed: () => showStub(context),
-                          icon: const Icon(Icons.favorite_border_rounded, size: 22, color: AppColors.muted),
-                        ),
-                      ),
+                      PositionedDirectional(top: 0, end: 0, child: FavoriteButton(productId: product.id)),
                       if (product.isNew)
                         PositionedDirectional(
                           top: 10,

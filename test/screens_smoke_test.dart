@@ -40,6 +40,11 @@ void main() {
     '/stores',
     '/profile',
     '/profile/orders',
+    '/search',
+    '/search?category=30',
+    '/favorites',
+    '/notifications',
+    '/support',
   ];
 
   for (final lang in ['ru', 'kk']) {

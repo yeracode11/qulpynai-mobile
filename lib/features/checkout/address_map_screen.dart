@@ -10,6 +10,7 @@ import '../../core/widgets/async_view.dart';
 import '../../core/widgets/buttons.dart';
 import '../../core/widgets/visuals.dart';
 import '../../data/mock/mock_data.dart';
+import '../../data/models/models.dart';
 import '../../data/providers.dart';
 
 /// 1m — delivery zone check on a map. The map itself is a placeholder
@@ -17,10 +18,23 @@ import '../../data/providers.dart';
 class AddressMapScreen extends ConsumerWidget {
   const AddressMapScreen({super.key});
 
+  Future<void> _editAddress(BuildContext context, WidgetRef ref, Address current) async {
+    final updated = await showModalBottomSheet<Address>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      backgroundColor: AppColors.white,
+      builder: (_) => _AddressForm(initial: current),
+    );
+    if (updated == null) return;
+    await ref.read(profileRepositoryProvider).updateAddress(updated);
+    ref.invalidate(profileProvider);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
-    final street = ref.watch(profileProvider).value?.address.street;
+    final address = ref.watch(profileProvider).value?.address;
     final eta = l10n.etaRange('30', '45');
     return Scaffold(
       body: Stack(
@@ -101,7 +115,7 @@ class AddressMapScreen extends ConsumerWidget {
                     size: 48,
                     shadow: true,
                     tooltip: l10n.myLocation,
-                    onPressed: () => showStub(context),
+                    onPressed: () => showStub(context, l10n.mapSoon),
                   ),
                 ),
                 Container(
@@ -125,16 +139,43 @@ class AddressMapScreen extends ConsumerWidget {
                             decoration: BoxDecoration(color: AppColors.line, borderRadius: BorderRadius.circular(2)),
                           ),
                         ),
-                        Container(
-                          height: 56,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(color: AppColors.bg, borderRadius: BorderRadius.circular(18)),
-                          child: Row(
-                            spacing: 12,
-                            children: [
-                              const Icon(Icons.search_rounded, size: 18, color: AppColors.muted),
-                              Text(street == null ? '…' : context.tr(street), style: AppText.ui(15, weight: FontWeight.w700)),
-                            ],
+                        Material(
+                          color: AppColors.bg,
+                          borderRadius: BorderRadius.circular(18),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(18),
+                            onTap: address == null ? null : () => _editAddress(context, ref, address),
+                            child: Container(
+                              constraints: const BoxConstraints(minHeight: 56),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              child: Row(
+                                spacing: 12,
+                                children: [
+                                  const Icon(Icons.search_rounded, size: 18, color: AppColors.muted),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      spacing: 2,
+                                      children: [
+                                        Text(
+                                          address == null ? '…' : context.tr(address.street),
+                                          style: AppText.ui(15, weight: FontWeight.w700),
+                                        ),
+                                        if (address != null && (address.apartment.isNotEmpty || address.floor.isNotEmpty))
+                                          Text(
+                                            [
+                                              if (address.apartment.isNotEmpty) '${l10n.aptLabel} ${address.apartment}',
+                                              if (address.floor.isNotEmpty) '${l10n.floor} ${address.floor}',
+                                            ].join(', '),
+                                            style: AppText.caption,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Icon(Icons.edit_outlined, size: 18, color: AppColors.muted),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                         Container(
@@ -175,6 +216,96 @@ class AddressMapScreen extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AddressForm extends StatefulWidget {
+  const _AddressForm({required this.initial});
+
+  final Address initial;
+
+  @override
+  State<_AddressForm> createState() => _AddressFormState();
+}
+
+class _AddressFormState extends State<_AddressForm> {
+  late final _street = TextEditingController(text: widget.initial.street.ru);
+  late final _apartment = TextEditingController(text: widget.initial.apartment);
+  late final _floor = TextEditingController(text: widget.initial.floor);
+
+  @override
+  void initState() {
+    super.initState();
+    _street.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _street.dispose();
+    _apartment.dispose();
+    _floor.dispose();
+    super.dispose();
+  }
+
+  InputDecoration _decoration(String label) => InputDecoration(
+    labelText: label,
+    filled: true,
+    fillColor: AppColors.bg,
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+      borderSide: const BorderSide(color: AppColors.teal, width: 1.5),
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final valid = _street.text.trim().isNotEmpty;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 20 + MediaQuery.viewInsetsOf(context).bottom + MediaQuery.paddingOf(context).bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 12,
+        children: [
+          Text(l10n.addresses, style: AppText.title),
+          TextField(
+            controller: _street,
+            autofocus: true,
+            textCapitalization: TextCapitalization.sentences,
+            textInputAction: TextInputAction.next,
+            autofillHints: const [AutofillHints.streetAddressLine1],
+            decoration: _decoration(l10n.street),
+          ),
+          Row(
+            spacing: 12,
+            children: [
+              Expanded(
+                child: TextField(controller: _apartment, textInputAction: TextInputAction.next, decoration: _decoration(l10n.aptLabel)),
+              ),
+              Expanded(
+                child: TextField(
+                  controller: _floor,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.done,
+                  decoration: _decoration(l10n.floor),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          PillButton(
+            label: l10n.save,
+            onPressed: valid
+                ? () => Navigator.of(context).pop(
+                    Address(street: LocalizedText.same(_street.text.trim()), apartment: _apartment.text.trim(), floor: _floor.text.trim()),
+                  )
+                : null,
           ),
         ],
       ),
