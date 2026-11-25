@@ -73,6 +73,17 @@ class MockStoresRepository implements StoresRepository {
   Future<List<Store>> stores() => Future.delayed(_latency, () => MockData.stores);
 }
 
+abstract interface class DeliveryRepository {
+  Future<List<DeliveryZone>> zones();
+}
+
+class MockDeliveryRepository implements DeliveryRepository {
+  const MockDeliveryRepository();
+
+  @override
+  Future<List<DeliveryZone>> zones() => Future.delayed(_latency, () => MockData.deliveryZones);
+}
+
 abstract interface class OrdersRepository {
   Future<List<Order>> orders();
 

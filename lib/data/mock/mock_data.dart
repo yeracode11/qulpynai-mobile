@@ -575,6 +575,7 @@ abstract final class MockData {
       closesAt: '22:00',
       minutesToClose: 240,
       phone: '+77070000001',
+      location: GeoPoint(43.2380, 76.9455), // approximate
     ),
     Store(
       id: 'dostyk',
@@ -585,6 +586,7 @@ abstract final class MockData {
       closesAt: '21:00',
       minutesToClose: 40,
       phone: '+77070000002',
+      location: GeoPoint(43.2337, 76.9561), // approximate
     ),
     Store(
       id: 'satpaeva',
@@ -595,6 +597,7 @@ abstract final class MockData {
       closesAt: '20:00',
       minutesToClose: 0,
       phone: '+77070000003',
+      location: GeoPoint(43.2306, 76.9257), // approximate
     ),
   ];
 
@@ -660,8 +663,37 @@ abstract final class MockData {
     name: LocalizedText('Айгерим', 'Әйгерім'),
     phone: '+77071234567',
     bonus: 1250,
-    address: Address(street: LocalizedText('ул. Абая, 52', 'Абай к-сі, 52'), apartment: '24', floor: '5'),
+    address: Address(
+      street: LocalizedText('ул. Абая, 52', 'Абай к-сі, 52'),
+      apartment: '24',
+      floor: '5',
+      location: GeoPoint(43.2380, 76.9455),
+    ),
   );
+
+  /// Approximate Almaty zones until the app reads `/api/delivery-zones/`.
+  static const deliveryZones = [
+    DeliveryZone(
+      id: 1,
+      name: 'Центр',
+      color: 0xFF0F7C7A,
+      price: 900,
+      points: [
+        GeoPoint(43.2860, 76.8850),
+        GeoPoint(43.2860, 76.9750),
+        GeoPoint(43.2150, 76.9900),
+        GeoPoint(43.1950, 76.9300),
+        GeoPoint(43.2150, 76.8750),
+      ],
+    ),
+    DeliveryZone(
+      id: 2,
+      name: 'Бостандык',
+      color: 0xFFE07A1F,
+      price: 1500,
+      points: [GeoPoint(43.2150, 76.8750), GeoPoint(43.1950, 76.9300), GeoPoint(43.1700, 76.9100), GeoPoint(43.1850, 76.8400)],
+    ),
+  ];
 
   static const freeDeliveryFrom = 10000;
   static const deliveryFee = 900;

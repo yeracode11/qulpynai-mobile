@@ -1,4 +1,7 @@
+import '../../core/geo/geo.dart';
 import 'localized_text.dart';
+
+export '../../core/geo/geo.dart' show GeoPoint;
 
 export 'localized_text.dart';
 
@@ -125,10 +128,14 @@ class Store {
     required this.closesAt,
     required this.minutesToClose,
     required this.phone,
+    required this.location,
   });
 
   final String id;
   final String name;
+
+  /// Where the store's pin goes on the map.
+  final GeoPoint location;
   final LocalizedText address;
   final double distanceKm;
   final StoreStatus status;
@@ -190,9 +197,32 @@ class UserProfile {
 }
 
 class Address {
-  const Address({required this.street, required this.apartment, required this.floor});
+  const Address({required this.street, required this.apartment, required this.floor, this.location});
 
   final LocalizedText street;
   final String apartment;
   final String floor;
+
+  /// Point picked on the map; null until the customer picks one.
+  final GeoPoint? location;
+}
+
+/// Delivery zone drawn on the map, mirrors the backend's `DeliveryZone`
+/// (`GET /api/delivery-zones/`).
+class DeliveryZone {
+  const DeliveryZone({required this.id, required this.name, required this.color, required this.points, required this.price});
+
+  final int id;
+  final String name;
+
+  /// Fill/stroke colour as ARGB, parsed from the backend's `#RRGGBB`.
+  final int color;
+
+  /// Outer ring of the polygon.
+  final List<GeoPoint> points;
+
+  /// Delivery price in this zone, tenge.
+  final int price;
+
+  bool contains(GeoPoint p) => pointInPolygon(p, points);
 }

@@ -2,11 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../app/tab_bar.dart';
+import '../../core/geo/geo.dart';
+import '../../core/maps/location.dart';
+import '../../core/maps/qmap.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text.dart';
 import '../../core/utils/l10n.dart';
 import '../../core/utils/launch.dart';
 import '../../core/widgets/async_view.dart';
+import '../../core/widgets/buttons.dart';
 import '../../core/widgets/chips.dart';
 import '../../core/widgets/visuals.dart';
 import '../../data/models/models.dart';
@@ -36,6 +40,26 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
     super.dispose();
   }
 
+  final _map = QMapController();
+
+  /// The customer's position once they tap "My location"; distances count from it.
+  GeoPoint? _me;
+
+  GeoPoint _center(List<Store> stores) {
+    if (stores.isEmpty) return GeoPoint.almaty;
+    final lat = stores.map((s) => s.location.lat).reduce((a, b) => a + b) / stores.length;
+    final lng = stores.map((s) => s.location.lng).reduce((a, b) => a + b) / stores.length;
+    return GeoPoint(lat, lng);
+  }
+
+  Future<void> _locate() async {
+    final me = await locateMe(context);
+    if (me == null || !mounted) return;
+    setState(() => _me = me);
+    await _map.showUser();
+    await _map.moveTo(me, zoom: 14);
+  }
+
   bool _matches(Store s) {
     final q = _search.text.trim().toLowerCase();
     if (q.isEmpty) return true;
@@ -46,6 +70,7 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final top = MediaQuery.paddingOf(context).top;
+    final stores = ref.watch(storesProvider).value ?? const <Store>[];
     return Scaffold(
       backgroundColor: AppColors.map,
       body: Stack(
@@ -55,24 +80,32 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
             right: 0,
             top: 0,
             height: 420 + top,
-            child: MapPlaceholder(caption: l10n.mapStub),
+            child: QMap(
+              center: _center(stores),
+              zoom: 13,
+              controller: _map,
+              pins: [
+                for (final st in stores)
+                  QMapPin(
+                    id: st.id,
+                    point: st.location,
+                    active: st.status != StoreStatus.closed,
+                    onTap: () => _map.moveTo(st.location, zoom: 15),
+                  ),
+              ],
+              fallback: _FallbackMap(top: top),
+            ),
           ),
-          // Store pins.
-          Positioned(left: 80, top: 126 + top, child: _pin(main: true)),
-          Positioned(
-            left: 230,
-            top: 96 + top,
-            child: _pin(color: AppColors.red),
-          ),
-          Positioned(
-            left: 200,
-            top: 206 + top,
-            child: _pin(color: AppColors.red),
-          ),
-          Positioned(
-            left: 300,
-            top: 246 + top,
-            child: _pin(color: AppColors.muted),
+          PositionedDirectional(
+            end: 16,
+            top: top + 76,
+            child: CircleIconButton(
+              icon: Icons.near_me_outlined,
+              foreground: AppColors.teal,
+              shadow: true,
+              tooltip: l10n.myLocation,
+              onPressed: _locate,
+            ),
           ),
           SafeArea(
             child: Padding(
@@ -113,6 +146,8 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
                 value: ref.watch(storesProvider),
                 builder: (stores) {
                   final shown = stores.where((s) => (!_openOnly || s.status != StoreStatus.closed) && _matches(s)).toList();
+                  final me = _me;
+                  if (me != null) shown.sort((a, b) => distanceKm(me, a.location).compareTo(distanceKm(me, b.location)));
                   return ListView(
                     controller: controller,
                     padding: EdgeInsets.fromLTRB(16, 12, 16, tabBarClearance(context)),
@@ -141,7 +176,7 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
                       for (final s in shown)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12),
-                          child: _StoreCard(store: s),
+                          child: _StoreCard(store: s, distance: _me == null ? s.distanceKm : distanceKm(_me!, s.location)),
                         ),
                     ],
                   );
@@ -151,6 +186,38 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Placeholder map with drawn pins, for builds without a MapKit key.
+class _FallbackMap extends StatelessWidget {
+  const _FallbackMap({required this.top});
+
+  final double top;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned.fill(child: MapPlaceholder(caption: context.l10n.mapStub)),
+        Positioned(left: 80, top: 126 + top, child: _pin(main: true)),
+        Positioned(
+          left: 230,
+          top: 96 + top,
+          child: _pin(color: AppColors.red),
+        ),
+        Positioned(
+          left: 200,
+          top: 206 + top,
+          child: _pin(color: AppColors.red),
+        ),
+        Positioned(
+          left: 300,
+          top: 246 + top,
+          child: _pin(color: AppColors.muted),
+        ),
+      ],
     );
   }
 
@@ -181,9 +248,12 @@ class _StoresScreenState extends ConsumerState<StoresScreen> {
 }
 
 class _StoreCard extends StatelessWidget {
-  const _StoreCard({required this.store});
+  const _StoreCard({required this.store, required this.distance});
 
   final Store store;
+
+  /// Kilometres from the customer (or the mock estimate before we know where they are).
+  final double distance;
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +275,7 @@ class _StoreCard extends StatelessWidget {
                 child: Text(store.name, style: AppText.ui(16, weight: FontWeight.w700)),
               ),
               Text(
-                '${store.distanceKm.toStringAsFixed(1).replaceAll('.', ',')} км',
+                '${distance.toStringAsFixed(1).replaceAll('.', ',')} км',
                 style: AppText.num(12, weight: FontWeight.w600, color: AppColors.muted),
               ),
             ],

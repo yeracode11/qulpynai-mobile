@@ -6,6 +6,7 @@ import 'repositories/repositories.dart';
 // Repositories: swap the mock for a real implementation here.
 final catalogRepositoryProvider = Provider<CatalogRepository>((ref) => const MockCatalogRepository());
 final storesRepositoryProvider = Provider<StoresRepository>((ref) => const MockStoresRepository());
+final deliveryRepositoryProvider = Provider<DeliveryRepository>((ref) => const MockDeliveryRepository());
 final ordersRepositoryProvider = Provider<OrdersRepository>((ref) => const MockOrdersRepository());
 final authRepositoryProvider = Provider<AuthRepository>((ref) => const MockAuthRepository());
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) => const MockProfileRepository());
@@ -23,5 +24,6 @@ final reviewsProvider = FutureProvider.family<List<Review>, String>((ref, id) =>
 final cakeSizesProvider = FutureProvider<List<CakeSize>>((ref) => ref.watch(catalogRepositoryProvider).cakeSizes());
 final cakeAddonsProvider = FutureProvider<List<CakeAddon>>((ref) => ref.watch(catalogRepositoryProvider).cakeAddons());
 final storesProvider = FutureProvider<List<Store>>((ref) => ref.watch(storesRepositoryProvider).stores());
+final deliveryZonesProvider = FutureProvider<List<DeliveryZone>>((ref) => ref.watch(deliveryRepositoryProvider).zones());
 final ordersProvider = FutureProvider<List<Order>>((ref) => ref.watch(ordersRepositoryProvider).orders());
 final profileProvider = FutureProvider<UserProfile>((ref) => ref.watch(profileRepositoryProvider).me());
